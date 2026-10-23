@@ -1,0 +1,390 @@
+.hero-section {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 64px;
+    min-height: 590px;
+    padding: 76px 8%;
+    overflow: hidden;
+    background: linear-gradient(120deg, #eaf1ff 0%, #f4f6ff 45%, #fff0e5 100%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 580px;
+}
+
+.hero-tag {
+    display: inline-block;
+    margin-bottom: 24px;
+    padding: 9px 14px;
+    border: 1px solid #fed7aa;
+    border-radius: 30px;
+    background: #fff0e5;
+    color: #ea580c;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.hero-content h1 {
+    margin: 0;
+    color: #172554;
+    font-size: clamp(38px, 4.4vw, 62px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -2px;
+}
+
+.hero-content h1 span {
+    color: #f97316;
+}
+
+.hero-description {
+    max-width: 510px;
+    margin: 24px 0 30px;
+    color: #334155;
+    font-size: 16px;
+    line-height: 1.9;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+}
+
+.hero-primary-btn,
+.hero-secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 13px 20px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-primary-btn {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.hero-primary-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.hero-secondary-btn {
+    border: 1px solid #fed7aa;
+    background: #ffffff;
+    color: #c2410c;
+}
+
+.hero-secondary-btn:hover {
+    border-color: #f97316;
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.hero-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 34px;
+}
+
+.hero-highlight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.highlight-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.blue-dot {
+    background: #2563eb;
+}
+
+.green-dot {
+    background: #10b981;
+}
+
+.orange-dot {
+    background: #f97316;
+}
+
+.hero-visual {
+    position: relative;
+    z-index: 1;
+    padding: 30px;
+    border: 1px solid #fed7aa;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 24px 70px rgba(37, 67, 125, 0.10);
+}
+
+.visual-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 26px;
+}
+
+.visual-eyebrow {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+}
+
+.visual-heading h2 {
+    margin: 8px 0 0;
+    color: #172554;
+    font-size: 23px;
+    letter-spacing: -0.5px;
+}
+
+.visual-icon,
+.progress-check {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff0e5;
+    color: #ea580c;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.learning-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 17px;
+    border: 1px solid #e8edf5;
+    border-radius: 13px;
+    background: #ffffff;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.learning-card:hover {
+    transform: translateY(-4px);
+    border-color: #f97316;
+    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.12);
+}
+
+.learning-card-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.react-icon {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.python-icon {
+    background: #fff0e5;
+    color: #ea580c;
+}
+
+.learning-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.learning-card-info h3 {
+    margin: 0 0 6px;
+    color: #1e293b;
+    font-size: 14px;
+}
+
+.learning-card-info p {
+    margin: 0;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.card-arrow {
+    color: #f97316;
+    font-size: 22px;
+}
+
+.progress-card {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 14px;
+    background: #172554;
+    color: #ffffff;
+}
+
+.progress-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.progress-label {
+    color: #fed7aa;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.progress-card h3 {
+    margin: 8px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.progress-check {
+    background: #fff0e5;
+    color: #ea580c;
+}
+
+.progress-track {
+    height: 7px;
+    margin: 20px 0 12px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #334778;
+}
+
+.progress-fill {
+    width: 68%;
+    height: 100%;
+    border-radius: inherit;
+    background: #f97316;
+}
+
+.progress-card>p {
+    margin: 0;
+    color: #dbeafe;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.hero-decoration {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(1px);
+    pointer-events: none;
+}
+
+.decoration-one,
+.decoration-two {
+    display: none;
+}
+
+@media (max-width: 1050px) {
+    .hero-section {
+        grid-template-columns: 1fr 0.9fr;
+        gap: 35px;
+        padding: 65px 5%;
+    }
+
+    .hero-visual {
+        padding: 22px;
+    }
+
+    .hero-highlights {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 760px) {
+    .hero-section {
+        grid-template-columns: 1fr;
+        gap: 42px;
+        padding: 55px 6%;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-content h1 {
+        font-size: clamp(38px, 8vw, 54px);
+        letter-spacing: -1.5px;
+    }
+
+    .hero-description {
+        font-size: 15px;
+    }
+
+    .hero-visual {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 420px) {
+    .hero-section {
+        padding: 42px 5%;
+    }
+
+    .hero-content h1 {
+        font-size: 36px;
+    }
+
+    .hero-buttons {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .hero-primary-btn,
+    .hero-secondary-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .hero-highlights {
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    .hero-visual {
+        padding: 16px;
+    }
+
+    .visual-heading h2 {
+        font-size: 19px;
+    }
+
+    .learning-card {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .learning-card-info h3 {
+        font-size: 13px;
+    }
+}

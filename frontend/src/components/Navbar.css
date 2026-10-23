@@ -1,0 +1,200 @@
+.navbar {
+    position: relative;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    padding: 15px 5%;
+    border-bottom: 1px solid #e8edf5;
+    background: #ffffff;
+}
+
+.navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 10px;
+    color: #172554;
+    text-decoration: none;
+}
+
+.brand-logo {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+}
+
+.navbar-links>a,
+.navbar-login {
+    color: #334155;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.navbar-links>a:hover,
+.navbar-login:hover {
+    color: #2563eb;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 18px;
+}
+
+.navbar-explore,
+.mobile-explore {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 17px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 650;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.navbar-explore:hover,
+.mobile-explore:hover {
+    background: #1d4ed8;
+}
+
+.hamburger,
+.mobile-actions {
+    display: none;
+}
+
+/* Tablet and mobile */
+@media (max-width: 800px) {
+    .navbar {
+        padding: 13px 5%;
+    }
+
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        width: 42px;
+        height: 42px;
+        padding: 8px;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        background: #ffffff;
+        cursor: pointer;
+    }
+
+    .hamburger span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        border-radius: 2px;
+        background: #172554;
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .navbar-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        display: none;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
+        padding: 12px 5% 20px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 12px 24px rgba(23, 37, 84, 0.08);
+    }
+
+    .navbar-links.open {
+        display: flex;
+    }
+
+    .navbar-links>a {
+        padding: 14px 4px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+    }
+
+    .navbar-actions {
+        display: none;
+    }
+
+    .mobile-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 16px;
+    }
+
+    .mobile-login {
+        padding: 12px 4px;
+        color: #334155;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    .mobile-explore {
+        min-height: 44px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 380px) {
+    .brand-name {
+        font-size: 15px;
+    }
+
+    .brand-logo {
+        width: 33px;
+        height: 33px;
+    }
+
+    .navbar {
+        gap: 12px;
+    }
+}
