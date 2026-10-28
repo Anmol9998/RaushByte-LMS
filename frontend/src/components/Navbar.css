@@ -1,0 +1,229 @@
+/* Navbar */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    padding: 15px 5%;
+    border-bottom: 1px solid #263953;
+    background: #07172f;
+}
+
+/* Brand */
+
+.navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 10px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.brand-logo {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: #f47721;
+    color: #ffffff;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.brand-name {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+/* Navigation links */
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+}
+
+.navbar-links>a,
+.navbar-login {
+    color: #c3cddd;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.navbar-links>a:hover,
+.navbar-login:hover {
+    color: #f47721;
+}
+
+/* Desktop actions */
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 20px;
+}
+
+.navbar-explore,
+.mobile-explore {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid #f47721;
+    border-radius: 7px;
+    background: #f47721;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 650;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.navbar-explore:hover,
+.mobile-explore:hover {
+    border-color: #e86410;
+    background: #e86410;
+    transform: translateY(-1px);
+}
+
+/* Mobile menu controls */
+
+.hamburger,
+.mobile-actions {
+    display: none;
+}
+
+/* Tablet and mobile */
+
+@media (max-width: 800px) {
+    .navbar {
+        padding: 13px 5%;
+    }
+
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        width: 42px;
+        height: 42px;
+        padding: 8px;
+        border: 1px solid #34465f;
+        border-radius: 9px;
+        background: #112744;
+        cursor: pointer;
+    }
+
+    .hamburger span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        border-radius: 2px;
+        background: #ffffff;
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .navbar-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        display: none;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
+        padding: 12px 5% 20px;
+        border-bottom: 1px solid #263953;
+        background: #07172f;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar-links.open {
+        display: flex;
+    }
+
+    .navbar-links>a {
+        padding: 14px 4px;
+        border-bottom: 1px solid #263953;
+        color: #c3cddd;
+        font-size: 14px;
+    }
+
+    .navbar-links>a:hover {
+        color: #f47721;
+    }
+
+    .navbar-actions {
+        display: none;
+    }
+
+    .mobile-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 16px;
+    }
+
+    .mobile-login {
+        padding: 12px 4px;
+        color: #c3cddd;
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+    .mobile-login:hover {
+        color: #f47721;
+    }
+
+    .mobile-explore {
+        min-height: 44px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 380px) {
+    .brand-name {
+        font-size: 15px;
+    }
+
+    .brand-logo {
+        width: 33px;
+        height: 33px;
+    }
+
+    .navbar {
+        gap: 12px;
+    }
+}
