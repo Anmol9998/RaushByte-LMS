@@ -42,16 +42,21 @@ function Login() {
         });
 
         // Save JWT tokens
-        localStorage.setItem("access_token", result.access);
-        localStorage.setItem("refresh_token", result.refresh);
-        localStorage.setItem("user", JSON.stringify(result.user));
+     
+        localStorage.setItem("user", JSON.stringify(result));
 
         setMessage("Login successful!");
 
         // Redirect to home page
         setTimeout(() => {
+            if (result.is_admin) {
             navigate("/");
-        }, 1000);
+        } else {
+            navigate("/");
+        }
+    }, 1000);
+
+        
 
     } catch (error) {
         if (error.detail) {
