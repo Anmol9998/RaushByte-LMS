@@ -15,8 +15,14 @@ node_modules/
 dist/
 
 # Secrets
-*.json
+.env
+.env.*
+!.env.example
 serviceAccountKey.json
+
+# Keep npm dependency files in Git
+!package.json
+!package-lock.json
 
 # Editor
 .vscode/
