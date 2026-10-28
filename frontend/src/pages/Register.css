@@ -1,0 +1,321 @@
+.register-page {
+    --register-blue: var(--primary-color, #2563eb);
+    --register-orange: var(--accent-color, #f97316);
+    --register-text: #172033;
+    --register-muted: #667085;
+
+    min-height: 100vh;
+    padding: 30px 20px 20px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f7f9fd;
+    color: var(--register-text);
+    font-family: inherit;
+}
+
+.register-decoration {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.register-decoration-one {
+    width: 340px;
+    height: 340px;
+    background: rgba(37, 99, 235, 0.09);
+    top: -150px;
+    left: -130px;
+}
+
+.register-decoration-two {
+    width: 300px;
+    height: 300px;
+    background: rgba(249, 115, 22, 0.10);
+    right: -120px;
+    bottom: -100px;
+}
+
+.register-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    margin: 0 auto 28px;
+    color: var(--register-text);
+    font-size: 21px;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -0.6px;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--register-blue);
+    color: white;
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);
+}
+
+.brand-highlight {
+    color: var(--register-orange);
+}
+
+.register-card {
+    width: 100%;
+    max-width: 510px;
+    padding: 36px 38px;
+    background: #fff;
+    border: 1px solid #e8edf5;
+    border-radius: 22px;
+    box-shadow: 0 18px 60px rgba(24, 43, 79, 0.08);
+    animation: register-appear 0.45s ease both;
+}
+
+.register-heading {
+    margin-bottom: 26px;
+}
+
+.register-eyebrow {
+    color: var(--register-orange);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.register-heading h1 {
+    margin: 10px 0;
+    font-size: clamp(27px, 5vw, 34px);
+    line-height: 1.2;
+    letter-spacing: -1.2px;
+}
+
+.register-heading h1 span {
+    color: var(--register-orange);
+}
+
+.register-heading p {
+    margin: 0;
+    color: var(--register-muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.register-name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.register-field {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.register-field label {
+    color: #344054;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.register-field input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    padding: 0 13px;
+    border: 1px solid #dce3ed;
+    border-radius: 9px;
+    background: #fff;
+    color: var(--register-text);
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.register-field input::placeholder {
+    color: #a0a8b7;
+}
+
+.register-field input:focus {
+    border-color: var(--register-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.register-password-wrap {
+    position: relative;
+}
+
+.register-password-wrap input {
+    padding-right: 60px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    padding: 4px 0;
+    border: 0;
+    background: transparent;
+    color: var(--register-blue);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.register-submit {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 3px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    border-radius: 10px;
+    background: var(--register-blue);
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.register-submit span {
+    color: #ffd0ad;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.register-submit:hover {
+    background: #1d4ed8;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+    transform: translateY(-1px);
+}
+
+.register-message {
+    margin: 0;
+    padding: 11px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.register-message.error {
+    background: #fff1f0;
+    color: #c43226;
+}
+
+.register-message.success {
+    background: #ecfdf3;
+    color: #027a48;
+}
+
+.register-terms {
+    margin: -2px 0 0;
+    color: #8a93a3;
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.register-login {
+    margin-top: 23px;
+    padding-top: 20px;
+    border-top: 1px solid #edf0f5;
+    color: var(--register-muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+.register-login a {
+    color: var(--register-blue);
+    font-weight: 750;
+    text-decoration: none;
+}
+
+.register-login a:hover {
+    color: var(--register-orange);
+}
+
+.register-footer {
+    margin: 23px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    color: #8791a2;
+    font-size: 11px;
+}
+
+.register-footer span {
+    color: #a1a9b6;
+}
+
+@keyframes register-appear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 520px) {
+    .register-page {
+        padding: 22px 14px 18px;
+    }
+
+    .register-brand {
+        margin-bottom: 22px;
+        font-size: 19px;
+    }
+
+    .register-card {
+        padding: 27px 20px;
+        border-radius: 17px;
+    }
+
+    .register-name-row {
+        grid-template-columns: 1fr;
+        gap: 17px;
+    }
+
+    .register-heading h1 {
+        letter-spacing: -0.8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .register-card {
+        animation: none;
+    }
+
+    .register-field input,
+    .register-submit {
+        transition: none;
+    }
+}

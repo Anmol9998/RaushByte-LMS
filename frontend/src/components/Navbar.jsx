@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar() {
@@ -11,15 +12,19 @@ function Navbar() {
 
     return (
         <header className="navbar">
-            <a href="#home" className="navbar-brand" onClick={closeMenu}>
+            <Link to="/" className="navbar-brand" onClick={closeMenu}>
                 <span className="brand-logo">R</span>
                 <span className="brand-name">RaushByte Learn</span>
-            </a>
+            </Link>
 
             <button
                 className={`hamburger ${menuOpen ? "active" : ""}`}
                 type="button"
-                aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-label={
+                    menuOpen
+                        ? "Close navigation menu"
+                        : "Open navigation menu"
+                }
                 aria-expanded={menuOpen}
                 aria-controls="navbar-links"
                 onClick={() => setMenuOpen((open) => !open)}
@@ -33,15 +38,20 @@ function Navbar() {
                 id="navbar-links"
                 className={`navbar-links ${menuOpen ? "open" : ""}`}
             >
-                <a href="#home" onClick={closeMenu}>Home</a>
+                <Link to="/" onClick={closeMenu}>Home</Link>
                 <a href="#courses" onClick={closeMenu}>Courses</a>
                 <a href="#features" onClick={closeMenu}>Features</a>
                 <a href="#about" onClick={closeMenu}>About</a>
 
                 <div className="mobile-actions">
-                    <a href="#login" className="mobile-login" onClick={closeMenu}>
+                    <Link
+                        to="/login"
+                        className="mobile-login"
+                        onClick={closeMenu}
+                    >
                         Log in
-                    </a>
+                    </Link>
+
                     <a
                         href="#courses"
                         className="mobile-explore"
@@ -53,9 +63,10 @@ function Navbar() {
             </nav>
 
             <div className="navbar-actions">
-                <a href="#login" className="navbar-login">
+                <Link to="/login" className="navbar-login">
                     Log in
-                </a>
+                </Link>
+
                 <a href="#courses" className="navbar-explore">
                     Explore Courses
                 </a>
