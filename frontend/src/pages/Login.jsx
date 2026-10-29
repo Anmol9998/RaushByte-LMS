@@ -28,44 +28,49 @@ function Login() {
     };
 
     const handleSubmit = async (event) => {
-    event.preventDefault();
+        event.preventDefault();
 
-    if (!formData.email.trim() || !formData.password) {
-        setMessage("Please enter your email and password.");
-        return;
-    }
-
-    try {
-        const result = await loginUser({
-            email: formData.email,
-            password: formData.password,
-        });
-
-        // Save JWT tokens
-     
-        localStorage.setItem("user", JSON.stringify(result));
-
-        setMessage("Login successful!");
-
-        // Redirect to home page
-        setTimeout(() => {
-            if (result.is_admin) {
-            navigate("/");
-        } else {
-            navigate("/");
+        if (!formData.email.trim() || !formData.password) {
+            setMessage("Please enter your email and password.");
+            return;
         }
-    }, 1000);
 
-        
+        try {
+            const result = await loginUser({
+                email: formData.email,
+                password: formData.password,
+            });
 
-    } catch (error) {
-        if (error.detail) {
-            setMessage(error.detail);
-        } else {
-            setMessage("Invalid email or password.");
+            // Save JWT tokens
+
+
+            // Save the user information and JWT tokens
+            localStorage.setItem("user", JSON.stringify(result));
+
+            setMessage("Login successful!");
+
+            const loggedInUser = result.user;
+
+            if (
+                loggedInUser?.is_admin ||
+                loggedInUser?.is_staff ||
+                loggedInUser?.is_superuser ||
+                loggedInUser?.role === "admin"
+            ) {
+                navigate("/admin-dashboard", { replace: true });
+            } else {
+                navigate("/dashboard", { replace: true });
+            }
+
+
+        } catch (error) {
+            if (error.detail) {
+                setMessage(error.detail);
+            } else {
+                setMessage("Invalid email or password.");
+            }
         }
-    }
-};
+    };
     return (
         <main className="login-page">
             <section className="login-visual">
