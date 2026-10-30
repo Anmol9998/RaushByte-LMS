@@ -1,6 +1,7 @@
 
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getDashboardSummary } from "../services/api";
 import {
     LayoutDashboard,
     Users,
@@ -20,9 +21,15 @@ import "./AdminDashboard.css";
 
 function AdminDashboard() {
     const navigate = useNavigate();
-
-    const storedData = JSON.parse(localStorage.getItem("user") || "{}");
-    const user = storedData.user || storedData;
+    const [summary, setSummary] = useState({
+    total_students: 0,
+    total_mentors: 0,
+    total_admins: 0,
+    active_courses: 0,
+    internship_batches: 0,
+});
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const accessToken = localStorage.getItem("access");
     const isAdmin =
         user.is_admin ||
         user.is_staff ||
@@ -30,21 +37,40 @@ function AdminDashboard() {
         user.role === "admin";
 
     useEffect(() => {
-        if (!storedData.access || !isAdmin) {
+        if (!accessToken || !isAdmin) {
             navigate("/login", { replace: true });
         }
-    }, []);
+    }, [accessToken, isAdmin, navigate]);
+
+    useEffect(() => {
+    async function loadDashboard() {
+        try {
+            const data = await getDashboardSummary();
+            console.log("Dashboard Data:", data);
+
+            setSummary(data);
+        } catch (error) {
+            console.error("Dashboard Error:", error);
+        }
+    }
+
+    if (accessToken && isAdmin) {
+        loadDashboard();
+    }
+}, [accessToken, isAdmin]);
 
     const handleLogout = () => {
         localStorage.removeItem("user");
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
         navigate("/login", { replace: true });
     };
 
     const stats = [
-        { label: "Total Students", value: "—", icon: Users, color: "blue" },
-        { label: "Total Mentors", value: "—", icon: GraduationCap, color: "orange" },
-        { label: "Active Courses", value: "—", icon: BookOpen, color: "purple" },
-        { label: "Internship Batches", value: "—", icon: ClipboardList, color: "green" },
+        { label: "Total Students", value: summary.total_students, icon: Users, color: "blue" },
+        { label: "Total Mentors", value: summary.total_mentors, icon: GraduationCap, color: "orange" },
+        { label: "Active Courses", value: summary.active_courses, icon: BookOpen, color: "purple" },
+        { label: "Internship Batches", value: summary.internship_batches, icon: ClipboardList, color: "green" },
     ];
 
     const menuItems = [

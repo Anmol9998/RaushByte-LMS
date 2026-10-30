@@ -77,3 +77,38 @@ class LoginSerializer(serializers.Serializer):
                 "last_name": user.last_name,
             },
         }
+class UserSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "role",
+            "is_staff",
+            "is_active",
+            "date_joined",
+        ]
+        read_only_fields = ["id", "date_joined"]
+        extra_kwargs = {
+            "email": {
+                "validators": []
+            }
+        }
+
+    def get_id(self, obj):
+        return str(obj.id)
+
+    def validate_email(self, value):
+        instance = self.instance
+
+        existing_user = User.objects.filter(email=value).first()
+
+        if existing_user and (
+            instance is None or str(existing_user.id) != str(instance.id)
+        ):
+            raise serializers.ValidationError("Email already exists.")
+
+        return value

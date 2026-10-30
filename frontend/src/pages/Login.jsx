@@ -45,8 +45,9 @@ function Login() {
 
 
             // Save the user information and JWT tokens
-            localStorage.setItem("user", JSON.stringify(result));
-
+            localStorage.setItem("user", JSON.stringify(result.user));
+            localStorage.setItem("access", result.access);
+            localStorage.setItem("refresh", result.refresh);
             setMessage("Login successful!");
 
             const loggedInUser = result.user;

@@ -35,3 +35,28 @@ export async function loginUser(formData) {
 
   return data;
 }
+function getAuthHeaders() {
+  const token = localStorage.getItem("access");
+
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
+export async function getDashboardSummary() {
+  const response = await fetch(
+    `${API_BASE_URL}/auth/admin/dashboard/`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw data;
+  }
+
+  return data;
+}
