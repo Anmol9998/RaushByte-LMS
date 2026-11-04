@@ -1,7 +1,7 @@
 
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getDashboardSummary } from "../services/api";
+
 import {
     LayoutDashboard,
     Users,
@@ -16,20 +16,31 @@ import {
     ArrowUpRight,
     CalendarDays,
     Settings,
+    UserCheck,
 } from "lucide-react";
+
+import UserManagement from "./UserManagement";
+import { getDashboardSummary } from "../services/api";
+
 import "./AdminDashboard.css";
 
 function AdminDashboard() {
     const navigate = useNavigate();
+
+    const [activeSection, setActiveSection] = useState("overview");
     const [summary, setSummary] = useState({
-    total_students: 0,
-    total_mentors: 0,
-    total_admins: 0,
-    active_courses: 0,
-    internship_batches: 0,
-});
+        total_students: 0,
+        total_mentors: 0,
+        total_admins: 0,
+        active_courses: 0,
+        internship_batches: 0,
+    });
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const accessToken = localStorage.getItem("access");
+
     const isAdmin =
         user.is_admin ||
         user.is_staff ||
@@ -37,266 +48,449 @@ function AdminDashboard() {
         user.role === "admin";
 
     useEffect(() => {
-        if (!accessToken || !isAdmin) {
-            navigate("/login", { replace: true });
+        if (!isAdmin) {
+            navigate("/dashboard", { replace: true });
+            return;
         }
-    }, [accessToken, isAdmin, navigate]);
 
-    useEffect(() => {
-    async function loadDashboard() {
-        try {
-            const data = await getDashboardSummary();
-            console.log("Dashboard Data:", data);
-
-            setSummary(data);
-        } catch (error) {
-            console.error("Dashboard Error:", error);
-        }
-    }
-
-    if (accessToken && isAdmin) {
         loadDashboard();
-    }
-}, [accessToken, isAdmin]);
+    }, []);
+
+    const loadDashboard = async () => {
+        try {
+            setLoading(true);
+            setError("");
+
+            const data = await getDashboardSummary();
+
+            setSummary({
+                total_students: data.total_students ?? 0,
+                total_mentors: data.total_mentors ?? 0,
+                total_admins: data.total_admins ?? 0,
+                active_courses: data.active_courses ?? 0,
+                internship_batches: data.internship_batches ?? 0,
+            });
+        } catch (err) {
+            console.error("Dashboard loading error:", err);
+            setError("Unable to load dashboard statistics.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
-        navigate("/login", { replace: true });
+        localStorage.removeItem("user");
+
+        navigate("/login");
     };
 
     const stats = [
-        { label: "Total Students", value: summary.total_students, icon: Users, color: "blue" },
-        { label: "Total Mentors", value: summary.total_mentors, icon: GraduationCap, color: "orange" },
-        { label: "Active Courses", value: summary.active_courses, icon: BookOpen, color: "purple" },
-        { label: "Internship Batches", value: summary.internship_batches, icon: ClipboardList, color: "green" },
+        {
+            label: "Total Students",
+            value: summary.total_students,
+            icon: Users,
+            color: "blue",
+        },
+        {
+            label: "Total Mentors",
+            value: summary.total_mentors,
+            icon: GraduationCap,
+            color: "orange",
+        },
+        {
+            label: "Total Admins",
+            value: summary.total_admins,
+            icon: UserCheck,
+            color: "green",
+        },
+        {
+            label: "Active Courses",
+            value: summary.active_courses,
+            icon: BookOpen,
+            color: "purple",
+        },
+        {
+            label: "Internship Batches",
+            value: summary.internship_batches,
+            icon: ClipboardList,
+            color: "green",
+        },
     ];
 
     const menuItems = [
-        { label: "Overview", icon: LayoutDashboard, active: true },
-        { label: "User Management", icon: Users },
-        { label: "Courses", icon: BookOpen },
-        { label: "Internship Batches", icon: GraduationCap },
-        { label: "Assignments", icon: ClipboardList },
-        { label: "Certificates", icon: Award },
+        {
+            id: "overview",
+            label: "Overview",
+            icon: LayoutDashboard,
+        },
+        {
+            id: "users",
+            label: "User Management",
+            icon: Users,
+        },
+        {
+            id: "courses",
+            label: "Courses",
+            icon: BookOpen,
+        },
+        {
+            id: "batches",
+            label: "Internship Batches",
+            icon: GraduationCap,
+        },
+        {
+            id: "assignments",
+            label: "Assignments",
+            icon: ClipboardList,
+        },
+        {
+            id: "certificates",
+            label: "Certificates",
+            icon: Award,
+        },
     ];
 
+    const handleMenuClick = (section) => {
+        if (section === "overview" || section === "users") {
+            setActiveSection(section);
+        } else {
+            alert(`${section} section is coming soon.`);
+        }
+    };
+
     return (
-        <div className="admin-layout">
+        <div className="admin-dashboard">
+
+            {/* Sidebar */}
             <aside className="admin-sidebar">
-                <Link to="/" className="admin-brand">
-                    <span className="admin-brand-icon"><BookOpen size={23} /></span>
-                    <span>RaushByte <strong>Learn</strong></span>
-                </Link>
 
-                <div className="admin-sidebar-label">WORKSPACE</div>
+                <div className="admin-logo">
+                    <Link to="/">
+                        <span className="logo-text">
+                            Raush<span>Byte</span>
+                        </span>
+                    </Link>
+                    <p>ADMIN PANEL</p>
+                </div>
 
-                <nav className="admin-nav">
-                    {menuItems.map(({ label, icon: Icon, active }) => (
-                        <button
-                            type="button"
-                            key={label}
-                            className={`admin-nav-item ${active ? "active" : ""}`}
-                            onClick={() => {
-                                if (!active) {
-                                    alert(`${label} section will be connected next.`);
-                                }
-                            }}
-                        >
-                            <Icon size={19} />
-                            <span>{label}</span>
-                            {active && <span className="admin-active-indicator" />}
-                        </button>
-                    ))}
-                </nav>
+                <div className="admin-sidebar-section">
+                    <p className="sidebar-heading">MAIN MENU</p>
+
+                    <nav className="admin-nav">
+                        {menuItems.map((item) => {
+                            const Icon = item.icon;
+
+                            return (
+                                <button
+                                    key={item.id}
+                                    className={`admin-nav-item ${activeSection === item.id ? "active" : ""
+                                        }`}
+                                    onClick={() => handleMenuClick(item.id)}
+                                >
+                                    <Icon size={19} />
+                                    <span>{item.label}</span>
+                                </button>
+                            );
+                        })}
+                    </nav>
+                </div>
 
                 <div className="admin-sidebar-bottom">
                     <button
-                        type="button"
                         className="admin-nav-item"
-                        onClick={() => alert("Settings will be added later.")}
+                        onClick={() => alert("Settings coming soon.")}
                     >
                         <Settings size={19} />
                         <span>Settings</span>
                     </button>
+
                     <button
-                        type="button"
-                        className="admin-nav-item admin-logout"
+                        className="admin-nav-item logout-item"
                         onClick={handleLogout}
                     >
                         <LogOut size={19} />
-                        <span>Log out</span>
+                        <span>Logout</span>
                     </button>
-                    <div className="admin-profile">
-                        <div className="admin-avatar">
-                            {(user.first_name || user.username || "A").charAt(0).toUpperCase()}
-                        </div>
-                        <div className="admin-profile-info">
-                            <strong>
-                                {user.first_name || user.username || "Administrator"}
-                            </strong>
-                            <span>Administrator</span>
-                        </div>
-                    </div>
                 </div>
+
             </aside>
 
+            {/* Main Content */}
             <main className="admin-main">
+
+                {/* Topbar */}
                 <header className="admin-topbar">
+
                     <div className="admin-breadcrumb">
-                        <span>Workspace</span>
-                        <span>/</span>
-                        <strong>Overview</strong>
+                        <span>Admin</span>
+                        <span className="breadcrumb-divider">/</span>
+                        <strong>
+                            {activeSection === "overview"
+                                ? "Overview"
+                                : activeSection === "users"
+                                    ? "User Management"
+                                    : activeSection.charAt(0).toUpperCase() +
+                                    activeSection.slice(1)}
+                        </strong>
                     </div>
 
-                    <div className="admin-topbar-actions">
-                        <label className="admin-search">
-                            <Search size={18} />
-                            <input type="search" placeholder="Search dashboard..." />
-                        </label>
+                    <div className="admin-topbar-right">
+
+                        <div className="admin-search">
+                            <Search size={17} />
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                aria-label="Search"
+                            />
+                        </div>
+
                         <button
-                            type="button"
                             className="admin-icon-button"
                             aria-label="Notifications"
-                            onClick={() => alert("Notifications will be connected later.")}
+                            onClick={() => alert("Notifications coming soon.")}
                         >
-                            <Bell size={20} />
-                            <span />
+                            <Bell size={19} />
                         </button>
+
+                        <div className="admin-profile">
+                            <div className="admin-avatar">
+                                {(user.first_name || user.username || "A")
+                                    .charAt(0)
+                                    .toUpperCase()}
+                            </div>
+
+                            <div className="admin-profile-info">
+                                <strong>
+                                    {user.first_name || user.username || "Admin"}
+                                </strong>
+                                <span>Administrator</span>
+                            </div>
+
+                        </div>
+
                     </div>
                 </header>
 
+                {/* Dashboard Content */}
                 <section className="admin-content">
-                    <div className="admin-welcome-row">
-                        <div>
-                            <p className="admin-eyebrow">ADMINISTRATION</p>
-                            <h1>Dashboard overview</h1>
-                            <p className="admin-subtitle">
-                                Welcome back, {user.first_name || user.username || "Admin"}.
-                                Here's your learning platform at a glance.
-                            </p>
-                        </div>
-                        <div className="admin-date">
-                            <CalendarDays size={17} />
-                            <span>{new Date().toLocaleDateString("en-IN", {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                            })}</span>
-                        </div>
-                    </div>
 
-                    <section className="admin-hero">
-                        <div className="admin-hero-content">
-                            <span className="admin-hero-tag">RAUSHBYTE LEARN</span>
-                            <h2>Build a better learning experience.</h2>
-                            <p>
-                                Manage learners, organize courses, and keep your training
-                                programs moving forward from one place.
-                            </p>
-                            <button
-                                type="button"
-                                className="admin-primary-button"
-                                onClick={() => alert("User management will be connected next.")}
-                            >
-                                <Plus size={18} /> Manage users
-                            </button>
-                        </div>
-                        <div className="admin-hero-art">
-                            <div className="admin-art-circle">
-                                <GraduationCap size={76} strokeWidth={1.4} />
-                            </div>
-                            <span className="admin-art-dot dot-one" />
-                            <span className="admin-art-dot dot-two" />
-                        </div>
-                    </section>
+                    {activeSection === "users" ? (
+                        <UserManagement />
+                    ) : (
 
-                    <div className="admin-section-heading">
-                        <div>
-                            <h2>Platform summary</h2>
-                            <p>Your platform metrics will appear here.</p>
-                        </div>
-                    </div>
-
-                    <section className="admin-stats-grid">
-                        {stats.map(({ label, value, icon: Icon, color }) => (
-                            <article className="admin-stat-card" key={label}>
-                                <div className={`admin-stat-icon ${color}`}>
-                                    <Icon size={22} />
-                                </div>
-                                <p>{label}</p>
-                                <div className="admin-stat-bottom">
-                                    <h3>{value}</h3>
-                                    <span className="admin-stat-note">Awaiting API</span>
-                                </div>
-                            </article>
-                        ))}
-                    </section>
-
-                    <section className="admin-lower-grid">
-                        <article className="admin-panel admin-quick-panel">
-                            <div className="admin-panel-heading">
+                        <>
+                            {/* Overview Heading */}
+                            <div className="admin-page-heading">
                                 <div>
-                                    <h2>Quick actions</h2>
-                                    <p>Common administration tasks</p>
+                                    <p className="admin-eyebrow">ADMINISTRATION</p>
+                                    <h1>Dashboard Overview</h1>
+                                    <p>
+                                        Welcome back! Here's what's happening with your LMS.
+                                    </p>
                                 </div>
+
+                                <button
+                                    className="admin-primary-button"
+                                    onClick={() => setActiveSection("users")}
+                                >
+                                    <Plus size={18} />
+                                    Add a User
+                                </button>
                             </div>
 
-                            <button
-                                type="button"
-                                className="admin-action-row"
-                                onClick={() => alert("User creation will be connected next.")}
-                            >
-                                <span className="admin-action-icon orange"><Users size={20} /></span>
-                                <span><strong>Add a user</strong><small>Create a student or mentor account</small></span>
-                                <ArrowUpRight size={18} />
-                            </button>
+                            {/* Hero Section */}
+                            <section className="admin-hero">
 
-                            <button
-                                type="button"
-                                className="admin-action-row"
-                                onClick={() => alert("Course creation will be connected next.")}
-                            >
-                                <span className="admin-action-icon blue"><BookOpen size={20} /></span>
-                                <span><strong>Create a course</strong><small>Prepare new learning content</small></span>
-                                <ArrowUpRight size={18} />
-                            </button>
+                                <div className="admin-hero-content">
+                                    <span className="admin-hero-label">
+                                        LEARNING MANAGEMENT SYSTEM
+                                    </span>
 
-                            <button
-                                type="button"
-                                className="admin-action-row"
-                                onClick={() => alert("Batch management will be connected next.")}
-                            >
-                                <span className="admin-action-icon purple"><GraduationCap size={20} /></span>
-                                <span><strong>Set up an internship batch</strong><small>Organize learners into a batch</small></span>
-                                <ArrowUpRight size={18} />
-                            </button>
-                        </article>
+                                    <h2>
+                                        Manage your
+                                        <span> learning ecosystem.</span>
+                                    </h2>
 
-                        <article className="admin-panel admin-activity-panel">
-                            <div className="admin-panel-heading">
-                                <div>
-                                    <h2>Recent activity</h2>
-                                    <p>Latest platform updates</p>
+                                    <p>
+                                        Manage students, mentors, courses and internship
+                                        batches from one place.
+                                    </p>
+
+                                    <button
+                                        className="admin-hero-button"
+                                        onClick={() => setActiveSection("users")}
+                                    >
+                                        Manage Users
+                                        <ArrowUpRight size={17} />
+                                    </button>
                                 </div>
-                            </div>
-                            <div className="admin-empty-activity">
-                                <div><CalendarDays size={25} /></div>
-                                <h3>No activity to show yet</h3>
+
+                                <div className="admin-hero-artwork">
+                                    <div className="admin-hero-circle">
+                                        <GraduationCap size={100} />
+                                    </div>
+                                </div>
+
+                            </section>
+
+                            {/* Statistics */}
+                            <section className="admin-stats-section">
+
+                                <div className="admin-section-heading">
+                                    <div>
+                                        <h2>Platform Statistics</h2>
+                                        <p>Overview of your LMS performance</p>
+                                    </div>
+
+                                    <button
+                                        className="admin-refresh-button"
+                                        onClick={loadDashboard}
+                                    >
+                                        <ArrowUpRight size={16} />
+                                        Refresh
+                                    </button>
+                                </div>
+
+                                {error && (
+                                    <p className="admin-error-message">{error}</p>
+                                )}
+
+                                <div className="admin-stats-grid">
+
+                                    {stats.map((stat) => {
+                                        const Icon = stat.icon;
+
+                                        return (
+                                            <div
+                                                className="admin-stat-card"
+                                                key={stat.label}
+                                            >
+                                                <div className="admin-stat-top">
+                                                    <div
+                                                        className={`admin-stat-icon ${stat.color}`}
+                                                    >
+                                                        <Icon size={21} />
+                                                    </div>
+
+                                                    <ArrowUpRight
+                                                        size={17}
+                                                        className="admin-stat-arrow"
+                                                    />
+                                                </div>
+
+                                                <h3>
+                                                    {loading ? "..." : stat.value}
+                                                </h3>
+
+                                                <p>{stat.label}</p>
+                                                <span className="admin-stat-note">
+                                                    Live data
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+
+                                </div>
+                            </section>
+
+                            {/* Lower Dashboard Panels */}
+                            <section className="admin-lower-grid">
+
+                                <div className="admin-panel">
+                                    <div className="admin-panel-heading">
+                                        <div>
+                                            <h2>Quick Actions</h2>
+                                            <p>Manage your platform</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="admin-quick-actions">
+
+                                        <button
+                                            className="admin-quick-action"
+                                            onClick={() => setActiveSection("users")}
+                                        >
+                                            <div className="quick-action-icon">
+                                                <Users size={20} />
+                                            </div>
+                                            <span>
+                                                <strong>Manage Users</strong>
+                                                <small>Add, edit or remove users</small>
+                                            </span>
+                                            <ArrowUpRight size={17} />
+                                        </button>
+
+                                        <button
+                                            className="admin-quick-action"
+                                            onClick={() => handleMenuClick("courses")}
+                                        >
+                                            <div className="quick-action-icon">
+                                                <BookOpen size={20} />
+                                            </div>
+                                            <span>
+                                                <strong>Manage Courses</strong>
+                                                <small>Organize learning content</small>
+                                            </span>
+                                            <ArrowUpRight size={17} />
+                                        </button>
+
+                                        <button
+                                            className="admin-quick-action"
+                                            onClick={() => handleMenuClick("batches")}
+                                        >
+                                            <div className="quick-action-icon">
+                                                <GraduationCap size={20} />
+                                            </div>
+                                            <span>
+                                                <strong>Internship Batches</strong>
+                                                <small>Manage internship programs</small>
+                                            </span>
+                                            <ArrowUpRight size={17} />
+                                        </button>
+
+                                    </div>
+                                </div>
+
+                                <div className="admin-panel">
+                                    <div className="admin-panel-heading">
+                                        <div>
+                                            <h2>Platform Updates</h2>
+                                            <p>Stay on top of your LMS</p>
+                                        </div>
+                                        <CalendarDays size={20} />
+                                    </div>
+
+                                    <div className="admin-update-empty">
+                                        <div className="admin-update-icon">
+                                            <Bell size={23} />
+                                        </div>
+
+                                        <h3>You're all caught up!</h3>
+                                        <p>
+                                            New platform updates and activities will appear here.
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </section>
+
+                            {/* Footer */}
+                            <footer className="admin-footer">
                                 <p>
-                                    Recent registrations and platform updates will appear here
-                                    when activity tracking is connected.
+                                    © {new Date().getFullYear()} RaushByte Learn. All rights
+                                    reserved.
                                 </p>
-                            </div>
-                        </article>
-                    </section>
+                                <span>Admin Dashboard</span>
+                            </footer>
 
-                    <footer className="admin-footer">
-                        <span>© {new Date().getFullYear()} RaushByte Learn</span>
-                        <span>Learn. Build. Grow.</span>
-                    </footer>
+                        </>
+                    )}
+
                 </section>
+
             </main>
         </div>
     );

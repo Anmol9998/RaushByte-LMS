@@ -74,7 +74,7 @@ class AdminDashboardSummaryView(APIView):
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminRole]
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):

@@ -77,33 +77,35 @@ class LoginSerializer(serializers.Serializer):
                 "last_name": user.last_name,
             },
         }
+
 class UserSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
+    password = serializers.CharField(
+        write_only=True,
+        required=False,
+        min_length=8
+    )
+
     class Meta:
         model = User
         fields = [
             "id",
+            "username",
             "first_name",
             "last_name",
             "email",
+            "password",
             "role",
-            "is_staff",
             "is_active",
             "date_joined",
         ]
         read_only_fields = ["id", "date_joined"]
-        extra_kwargs = {
-            "email": {
-                "validators": []
-            }
-        }
 
     def get_id(self, obj):
         return str(obj.id)
 
     def validate_email(self, value):
         instance = self.instance
-
         existing_user = User.objects.filter(email=value).first()
 
         if existing_user and (
@@ -112,3 +114,26 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Email already exists.")
 
         return value
+
+    # Validate password only when creating a new user
+    def validate(self, attrs):
+        if self.instance is None and not attrs.get("password"):
+            raise serializers.ValidationError({
+                "password": "Password is required."
+            })
+
+        return attrs
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+
+        return User.objects.create_user(
+            password=password,
+            **validated_data
+        )
+
+    def update(self, instance, validated_data):
+        # Password changes are handled separately.
+        validated_data.pop("password", None)
+
+        return super().update(instance, validated_data)
