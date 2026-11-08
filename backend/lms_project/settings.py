@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "quizzes",
     "progress",
     "certificates",
+    "internship_batches",
 ]
 
 MIDDLEWARE = [
