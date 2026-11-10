@@ -35,22 +35,15 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
 
         if serializer.is_valid():
-            data = serializer.validated_data
-
-            # Get the user using the email returned by the serializer
-            user = User.objects.get(email=data["user"]["email"])
-
-            # Add admin flag for frontend
-            data["user"]["is_admin"] = (
-                user.is_staff or
-                user.is_superuser or
-                user.role == "admin"
+            return Response(
+                serializer.validated_data,
+                status=status.HTTP_200_OK,
             )
 
-            return Response(data, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 class AdminDashboardSummaryView(APIView):
     permission_classes = [IsAdminRole]

@@ -60,6 +60,7 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
 
         user = User.objects.filter(email=email).first()
+
         if not user or not user.check_password(password):
             raise AuthenticationFailed("Invalid email or password.")
 
@@ -75,9 +76,13 @@ class LoginSerializer(serializers.Serializer):
                 "role": getattr(user, "role", "student"),
                 "first_name": user.first_name,
                 "last_name": user.last_name,
+                "is_admin": (
+                    user.is_staff
+                    or user.is_superuser
+                    or getattr(user, "role", "") == "admin"
+                ),
             },
         }
-
 class UserSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     password = serializers.CharField(
