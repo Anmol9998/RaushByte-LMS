@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 
 import UserManagement from "./UserManagement";
+import CourseManagement from "./CourseManagement";
+
 import { getDashboardSummary } from "../services/api";
 
 import "./AdminDashboard.css";
@@ -28,6 +30,7 @@ function AdminDashboard() {
     const navigate = useNavigate();
 
     const [activeSection, setActiveSection] = useState("overview");
+
     const [summary, setSummary] = useState({
         total_students: 0,
         total_mentors: 0,
@@ -47,15 +50,7 @@ function AdminDashboard() {
         user.is_superuser ||
         user.role === "admin";
 
-    useEffect(() => {
-        if (!isAdmin) {
-            navigate("/dashboard", { replace: true });
-            return;
-        }
-
-        loadDashboard();
-    }, []);
-
+    // Load dashboard statistics
     const loadDashboard = async () => {
         try {
             setLoading(true);
@@ -78,6 +73,17 @@ function AdminDashboard() {
         }
     };
 
+    // Check admin access
+    useEffect(() => {
+        if (!isAdmin) {
+            navigate("/dashboard", { replace: true });
+            return;
+        }
+
+        loadDashboard();
+    }, []);
+
+    // Logout
     const handleLogout = () => {
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
@@ -86,6 +92,7 @@ function AdminDashboard() {
         navigate("/login");
     };
 
+    // Dashboard statistics
     const stats = [
         {
             label: "Total Students",
@@ -119,6 +126,7 @@ function AdminDashboard() {
         },
     ];
 
+    // Sidebar menu items
     const menuItems = [
         {
             id: "overview",
@@ -152,12 +160,27 @@ function AdminDashboard() {
         },
     ];
 
+    // Handle sidebar navigation
     const handleMenuClick = (section) => {
-        if (section === "overview" || section === "users") {
+        if (["overview", "users", "courses"].includes(section)) {
             setActiveSection(section);
         } else {
             alert(`${section} section is coming soon.`);
         }
+    };
+
+    // Breadcrumb title
+    const getSectionTitle = () => {
+        const titles = {
+            overview: "Overview",
+            users: "User Management",
+            courses: "Course Management",
+            batches: "Internship Batches",
+            assignments: "Assignments",
+            certificates: "Certificates",
+        };
+
+        return titles[activeSection] || "Overview";
     };
 
     return (
@@ -172,6 +195,7 @@ function AdminDashboard() {
                             Raush<span>Byte</span>
                         </span>
                     </Link>
+
                     <p>ADMIN PANEL</p>
                 </div>
 
@@ -198,6 +222,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="admin-sidebar-bottom">
+
                     <button
                         className="admin-nav-item"
                         onClick={() => alert("Settings coming soon.")}
@@ -213,8 +238,8 @@ function AdminDashboard() {
                         <LogOut size={19} />
                         <span>Logout</span>
                     </button>
-                </div>
 
+                </div>
             </aside>
 
             {/* Main Content */}
@@ -226,14 +251,7 @@ function AdminDashboard() {
                     <div className="admin-breadcrumb">
                         <span>Admin</span>
                         <span className="breadcrumb-divider">/</span>
-                        <strong>
-                            {activeSection === "overview"
-                                ? "Overview"
-                                : activeSection === "users"
-                                    ? "User Management"
-                                    : activeSection.charAt(0).toUpperCase() +
-                                    activeSection.slice(1)}
-                        </strong>
+                        <strong>{getSectionTitle()}</strong>
                     </div>
 
                     <div className="admin-topbar-right">
@@ -256,6 +274,7 @@ function AdminDashboard() {
                         </button>
 
                         <div className="admin-profile">
+
                             <div className="admin-avatar">
                                 {(user.first_name || user.username || "A")
                                     .charAt(0)
@@ -270,23 +289,36 @@ function AdminDashboard() {
                             </div>
 
                         </div>
-
                     </div>
                 </header>
 
                 {/* Dashboard Content */}
                 <section className="admin-content">
 
-                    {activeSection === "users" ? (
+                    {/* User Management */}
+                    {activeSection === "users" && (
                         <UserManagement />
-                    ) : (
+                    )}
 
+                    {/* Course Management */}
+                    {activeSection === "courses" && (
+                        <CourseManagement />
+                    )}
+
+                    {/* Dashboard Overview */}
+                    {activeSection === "overview" && (
                         <>
+
                             {/* Overview Heading */}
                             <div className="admin-page-heading">
+
                                 <div>
-                                    <p className="admin-eyebrow">ADMINISTRATION</p>
+                                    <p className="admin-eyebrow">
+                                        ADMINISTRATION
+                                    </p>
+
                                     <h1>Dashboard Overview</h1>
+
                                     <p>
                                         Welcome back! Here's what's happening with your LMS.
                                     </p>
@@ -299,12 +331,14 @@ function AdminDashboard() {
                                     <Plus size={18} />
                                     Add a User
                                 </button>
+
                             </div>
 
                             {/* Hero Section */}
                             <section className="admin-hero">
 
                                 <div className="admin-hero-content">
+
                                     <span className="admin-hero-label">
                                         LEARNING MANAGEMENT SYSTEM
                                     </span>
@@ -326,6 +360,7 @@ function AdminDashboard() {
                                         Manage Users
                                         <ArrowUpRight size={17} />
                                     </button>
+
                                 </div>
 
                                 <div className="admin-hero-artwork">
@@ -340,6 +375,7 @@ function AdminDashboard() {
                             <section className="admin-stats-section">
 
                                 <div className="admin-section-heading">
+
                                     <div>
                                         <h2>Platform Statistics</h2>
                                         <p>Overview of your LMS performance</p>
@@ -348,14 +384,18 @@ function AdminDashboard() {
                                     <button
                                         className="admin-refresh-button"
                                         onClick={loadDashboard}
+                                        disabled={loading}
                                     >
                                         <ArrowUpRight size={16} />
                                         Refresh
                                     </button>
+
                                 </div>
 
                                 {error && (
-                                    <p className="admin-error-message">{error}</p>
+                                    <p className="admin-error-message">
+                                        {error}
+                                    </p>
                                 )}
 
                                 <div className="admin-stats-grid">
@@ -368,10 +408,10 @@ function AdminDashboard() {
                                                 className="admin-stat-card"
                                                 key={stat.label}
                                             >
+
                                                 <div className="admin-stat-top">
-                                                    <div
-                                                        className={`admin-stat-icon ${stat.color}`}
-                                                    >
+
+                                                    <div className={`admin-stat-icon ${stat.color}`}>
                                                         <Icon size={21} />
                                                     </div>
 
@@ -379,6 +419,7 @@ function AdminDashboard() {
                                                         size={17}
                                                         className="admin-stat-arrow"
                                                     />
+
                                                 </div>
 
                                                 <h3>
@@ -386,9 +427,11 @@ function AdminDashboard() {
                                                 </h3>
 
                                                 <p>{stat.label}</p>
+
                                                 <span className="admin-stat-note">
                                                     Live data
                                                 </span>
+
                                             </div>
                                         );
                                     })}
@@ -400,6 +443,7 @@ function AdminDashboard() {
                             <section className="admin-lower-grid">
 
                                 <div className="admin-panel">
+
                                     <div className="admin-panel-heading">
                                         <div>
                                             <h2>Quick Actions</h2>
@@ -409,6 +453,7 @@ function AdminDashboard() {
 
                                     <div className="admin-quick-actions">
 
+                                        {/* Manage Users */}
                                         <button
                                             className="admin-quick-action"
                                             onClick={() => setActiveSection("users")}
@@ -416,27 +461,33 @@ function AdminDashboard() {
                                             <div className="quick-action-icon">
                                                 <Users size={20} />
                                             </div>
+
                                             <span>
                                                 <strong>Manage Users</strong>
                                                 <small>Add, edit or remove users</small>
                                             </span>
+
                                             <ArrowUpRight size={17} />
                                         </button>
 
+                                        {/* Manage Courses */}
                                         <button
                                             className="admin-quick-action"
-                                            onClick={() => handleMenuClick("courses")}
+                                            onClick={() => setActiveSection("courses")}
                                         >
                                             <div className="quick-action-icon">
                                                 <BookOpen size={20} />
                                             </div>
+
                                             <span>
                                                 <strong>Manage Courses</strong>
                                                 <small>Organize learning content</small>
                                             </span>
+
                                             <ArrowUpRight size={17} />
                                         </button>
 
+                                        {/* Internship Batches */}
                                         <button
                                             className="admin-quick-action"
                                             onClick={() => handleMenuClick("batches")}
@@ -444,34 +495,42 @@ function AdminDashboard() {
                                             <div className="quick-action-icon">
                                                 <GraduationCap size={20} />
                                             </div>
+
                                             <span>
                                                 <strong>Internship Batches</strong>
                                                 <small>Manage internship programs</small>
                                             </span>
+
                                             <ArrowUpRight size={17} />
                                         </button>
 
                                     </div>
                                 </div>
 
+                                {/* Platform Updates */}
                                 <div className="admin-panel">
+
                                     <div className="admin-panel-heading">
                                         <div>
                                             <h2>Platform Updates</h2>
                                             <p>Stay on top of your LMS</p>
                                         </div>
+
                                         <CalendarDays size={20} />
                                     </div>
 
                                     <div className="admin-update-empty">
+
                                         <div className="admin-update-icon">
                                             <Bell size={23} />
                                         </div>
 
                                         <h3>You're all caught up!</h3>
+
                                         <p>
                                             New platform updates and activities will appear here.
                                         </p>
+
                                     </div>
                                 </div>
 
@@ -480,9 +539,10 @@ function AdminDashboard() {
                             {/* Footer */}
                             <footer className="admin-footer">
                                 <p>
-                                    © {new Date().getFullYear()} RaushByte Learn. All rights
-                                    reserved.
+                                    © {new Date().getFullYear()} RaushByte Learn.
+                                    All rights reserved.
                                 </p>
+
                                 <span>Admin Dashboard</span>
                             </footer>
 
@@ -490,7 +550,6 @@ function AdminDashboard() {
                     )}
 
                 </section>
-
             </main>
         </div>
     );
