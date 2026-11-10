@@ -27,3 +27,6 @@ serviceAccountKey.json
 
 # Editor
 .vscode/
+
+# Django generated static files
+backend/staticfiles/
