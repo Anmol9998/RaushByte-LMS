@@ -9,3 +9,4 @@ PyJWT==2.15.1
 pymongo==4.19.0
 python-dotenv==1.2.4
 gunicorn
+whitenoise
