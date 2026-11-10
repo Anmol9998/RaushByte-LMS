@@ -12,4 +12,4 @@ urlpatterns = [
     path("admin/dashboard/", AdminDashboardSummaryView.as_view(), name="admin-dashboard"),
     path("users/", UserListCreateView.as_view(), name="user-list"),
     path("users/<str:pk>/", UserDetailView.as_view(), name="user-detail"),
-    ]
+] 
