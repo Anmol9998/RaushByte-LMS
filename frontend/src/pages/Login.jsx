@@ -1,18 +1,20 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, BookOpen, ArrowRight } from "lucide-react";
 import "./Login.css";
 import { loginUser } from "../services/api";
-import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
         rememberMe: false,
     });
+
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
@@ -30,27 +32,30 @@ function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (isLoading) return;
+
         if (!formData.email.trim() || !formData.password) {
             setMessage("Please enter your email and password.");
             return;
         }
 
         try {
+            setIsLoading(true);
+            setMessage("");
+
             const result = await loginUser({
-                email: formData.email,
+                email: formData.email.trim(),
                 password: formData.password,
             });
 
-            // Save JWT tokens
-
-
-            // Save the user information and JWT tokens
+            // Save authentication information
             localStorage.setItem("user", JSON.stringify(result.user));
             localStorage.setItem("access", result.access);
             localStorage.setItem("refresh", result.refresh);
-            setMessage("Login successful!");
 
             const loggedInUser = result.user;
+
+            setMessage("Login successful!");
 
             if (
                 loggedInUser?.is_admin ||
@@ -63,15 +68,21 @@ function Login() {
                 navigate("/dashboard", { replace: true });
             }
 
-
         } catch (error) {
+            console.error("Login error:", error);
+
             if (error.detail) {
                 setMessage(error.detail);
+            } else if (error.non_field_errors) {
+                setMessage(error.non_field_errors[0]);
             } else {
-                setMessage("Invalid email or password.");
+                setMessage("Unable to log in. Please try again.");
             }
+        } finally {
+            setIsLoading(false);
         }
     };
+
     return (
         <main className="login-page">
             <section className="login-visual">
@@ -157,10 +168,18 @@ function Login() {
                                 <button
                                     type="button"
                                     className="login-eye-button"
-                                    onClick={() => setShowPassword((previous) => !previous)}
-                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                    onClick={() =>
+                                        setShowPassword((previous) => !previous)
+                                    }
+                                    aria-label={
+                                        showPassword ? "Hide password" : "Show password"
+                                    }
                                 >
-                                    {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                                    {showPassword ? (
+                                        <EyeOff size={19} />
+                                    ) : (
+                                        <Eye size={19} />
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -181,8 +200,13 @@ function Login() {
                             </p>
                         )}
 
-                        <button className="login-submit" type="submit">
-                            Sign in <ArrowRight size={19} />
+                        <button
+                            className="login-submit"
+                            type="submit"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Signing in..." : "Sign in"}
+                            {!isLoading && <ArrowRight size={19} />}
                         </button>
                     </form>
 

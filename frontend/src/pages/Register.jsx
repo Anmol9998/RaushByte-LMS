@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/api";
 import "./Register.css";
 
@@ -16,6 +16,8 @@ function Register() {
 
     const [message, setMessage] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleChange = (event) => {
@@ -30,53 +32,64 @@ function Register() {
     };
 
     const handleSubmit = async (event) => {
-    event.preventDefault();
+        event.preventDefault();
 
-    if (formData.password.length < 8) {
-        setMessage("Password must contain at least 8 characters.");
-        return;
-    }
+        if (isLoading) return;
 
-    if (formData.password !== formData.confirmPassword) {
-        setMessage("Passwords do not match.");
-        return;
-    }
-
-    try {
-        const result = await registerUser(formData);
-
-        setMessage(result.message || "Registration successful!");
-
-        // Redirect to Login page after 2 seconds
-        setTimeout(() => {
-            navigate("/login");
-        }, 2000);
-
-    } catch (error) {
-
-        if (error.email) {
-            setMessage(error.email[0]);
-        } else if (error.username) {
-            setMessage(error.username[0]);
-        } else if (error.confirmPassword) {
-            setMessage(error.confirmPassword[0]);
-        } else {
-            setMessage("Registration failed.");
+        if (formData.password.length < 8) {
+            setMessage("Password must contain at least 8 characters.");
+            return;
         }
-    }
-};
+
+        if (formData.password !== formData.confirmPassword) {
+            setMessage("Passwords do not match.");
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            setMessage("");
+
+            const result = await registerUser(formData);
+
+            setMessage(result.message || "Registration successful!");
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 2000);
+
+        } catch (error) {
+            console.error("Registration error:", error);
+
+            if (error.email) {
+                setMessage(error.email[0]);
+            } else if (error.username) {
+                setMessage(error.username[0]);
+            } else if (error.confirmPassword) {
+                setMessage(error.confirmPassword[0]);
+            } else if (error.password) {
+                setMessage(error.password[0]);
+            } else if (error.detail) {
+                setMessage(error.detail);
+            } else {
+                setMessage("Registration failed. Please try again.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <main className="register-page">
             <div className="register-decoration register-decoration-one" />
             <div className="register-decoration register-decoration-two" />
 
-            <a href="/" className="register-brand">
+            <Link to="/" className="register-brand">
                 <span className="brand-mark">R</span>
                 <span>
                     RaushByte<span className="brand-highlight"> Learn</span>
                 </span>
-            </a>
+            </Link>
 
             <section className="register-card">
                 <div className="register-heading">
@@ -166,8 +179,12 @@ function Register() {
                             <button
                                 type="button"
                                 className="password-toggle"
-                                onClick={() => setShowPassword((previous) => !previous)}
-                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                onClick={() =>
+                                    setShowPassword((previous) => !previous)
+                                }
+                                aria-label={
+                                    showPassword ? "Hide password" : "Show password"
+                                }
                             >
                                 {showPassword ? "Hide" : "Show"}
                             </button>
@@ -192,7 +209,6 @@ function Register() {
                         <p
                             className={
                                 message.toLowerCase().includes("successful")
-
                                     ? "register-message success"
                                     : "register-message error"
                             }
@@ -202,8 +218,13 @@ function Register() {
                         </p>
                     )}
 
-                    <button type="submit" className="register-submit">
-                        Create Account <span aria-hidden="true">→</span>
+                    <button
+                        type="submit"
+                        className="register-submit"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? "Creating account..." : "Create Account"}
+                        {!isLoading && <span aria-hidden="true">→</span>}
                     </button>
 
                     <p className="register-terms">
@@ -213,7 +234,7 @@ function Register() {
                 </form>
 
                 <div className="register-login">
-                    Already have an account? <a href="/login">Log in</a>
+                    Already have an account? <Link to="/login">Log in</Link>
                 </div>
             </section>
 
