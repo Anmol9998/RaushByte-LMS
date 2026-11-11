@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 10000
 
 # Collect static files and start Gunicorn
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn lms_project.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 1 --threads 2 --timeout 120"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn lms_project.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 1 --threads 2 --timeout 120 --access-logfile - --error-logfile - --capture-output --log-level info"]
