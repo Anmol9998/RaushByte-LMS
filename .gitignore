@@ -9,6 +9,8 @@ venv/
 !.env.example
 db.sqlite3
 media/
+backend/staticfiles/
+
 
 # React / Node
 node_modules/
@@ -16,6 +18,7 @@ dist/
 
 # Secrets
 .env
+backend/.env
 .env.*
 !.env.example
 serviceAccountKey.json
@@ -26,3 +29,6 @@ serviceAccountKey.json
 
 # Editor
 .vscode/
+
+# Django generated static files
+backend/staticfiles/

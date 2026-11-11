@@ -16,8 +16,8 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy application source
 COPY . .
 
-# Render provides PORT at runtime
+# Render port
 EXPOSE 10000
 
 # Collect static files and start Gunicorn
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn lms_project.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 2 --threads 4 --timeout 120"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn lms_project.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 1 --threads 2 --timeout 120"]

@@ -35,6 +35,8 @@ ALLOWED_HOSTS = [
     for host in raw_allowed_hosts.split(',') 
     if host.strip()
 ]
+# Render runs Django behind a proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 if not ALLOWED_HOSTS and not DEBUG:
     raise ImproperlyConfigured(
@@ -67,6 +69,7 @@ INSTALLED_APPS = [
     "quizzes",
     "progress",
     "certificates",
+    "internship_batches",
 ]
 
 MIDDLEWARE = [
@@ -197,11 +200,7 @@ STORAGES = {
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 AUTH_USER_MODEL = "users.CustomUser"
 
@@ -235,6 +234,15 @@ SIMPLE_JWT = {
     "SIGNING_KEY": os.getenv(
         "SIMPLE_JWT_SIGNING_KEY",
         SECRET_KEY
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+
+    'SIGNING_KEY': os.getenv(
+        'SIMPLE_JWT_SIGNING_KEY', 
+         SECRET_KEY
     ),
 }
 
