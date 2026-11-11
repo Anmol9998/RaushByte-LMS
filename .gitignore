@@ -9,6 +9,8 @@ venv/
 !.env.example
 db.sqlite3
 media/
+backend/staticfiles/
+
 
 # React / Node
 node_modules/
