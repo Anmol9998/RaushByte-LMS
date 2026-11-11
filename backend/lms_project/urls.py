@@ -22,5 +22,5 @@ urlpatterns = [
     path("api/auth/", include("users.urls")),
     path("api/courses/", include("courses.urls")),
     path("api/internship-batches/", include("internship_batches.urls")),
-
+    path("api/assignments/", include("assignments.urls")),
 ]
