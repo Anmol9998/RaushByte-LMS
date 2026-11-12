@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "storages",
+    "drf_spectacular",
 
     # PROJECT APPS
     "users",
@@ -83,6 +84,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+APPEND_SLASH = True
 
 ROOT_URLCONF = 'lms_project.urls'
 
@@ -211,6 +214,8 @@ MIGRATION_MODULES = {
 }
 
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -234,6 +239,25 @@ SIMPLE_JWT = {
         'SIMPLE_JWT_SIGNING_KEY', 
          SECRET_KEY
     ),
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "RaushByte LMS API",
+    "DESCRIPTION": """
+    API documentation for the RaushByte Learning
+    Management System.
+
+    This API provides endpoints for:
+    - User authentication
+    - User management
+    - Course management
+    - Modules and lessons
+    - Student enrollment
+    - Assessments
+    - Progress tracking
+    """,
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # CORS configuration

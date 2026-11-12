@@ -9,9 +9,10 @@ from lms_project.views import health_check
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("health/", health_check, name="health-check"),
-    path("api/auth/", include("users.urls")),
-    path("api/courses/", include("courses.urls")),
-    path("api/internship-batches/", include("internship_batches.urls")),
+    path("api/", include("api.urls")),
+    # path("api/auth/", include("users.urls")),
+    # path("api/courses/", include("courses.urls")),
+    # path("api/internship-batches/", include("internship_batches.urls")),
 ]
 
 handler404 = "lms_project.views.custom_404"
