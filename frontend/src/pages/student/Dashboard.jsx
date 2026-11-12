@@ -1,17 +1,23 @@
 
-import { Link } from "react-router-dom";
-import { BookOpen, Bell, Award, UserRound, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+    BookOpen,
+    Bell,
+    Award,
+    UserRound,
+    LogOut,
+} from "lucide-react";
+
+import { useAuth } from "../../context/AuthContext";
 import "./Dashboard.css";
-import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const navigate = useNavigate();
-    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const user = storedUser.user || storedUser;
+    const { user, logout } = useAuth();
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
-        navigate("/");
+        logout();
+        navigate("/", { replace: true });
     };
 
     return (
@@ -45,10 +51,17 @@ function Dashboard() {
                 <header className="dashboard-header">
                     <div>
                         <p className="dashboard-eyebrow">STUDENT SPACE</p>
-                        <h1>Welcome back, {user.first_name || user.username || "Learner"}!</h1>
+                        <h1>
+                            Welcome back,{" "}
+                            {user?.first_name || user?.username || "Learner"}!
+                        </h1>
                         <p>Ready to continue your learning journey?</p>
                     </div>
-                    <button className="dashboard-notifications" aria-label="Notifications">
+
+                    <button
+                        className="dashboard-notifications"
+                        aria-label="Notifications"
+                    >
                         <Bell size={21} />
                     </button>
                 </header>
@@ -57,8 +70,12 @@ function Dashboard() {
                     <div>
                         <span>YOUR LEARNING JOURNEY</span>
                         <h2>Learn something new today.</h2>
-                        <p>Explore courses, develop your skills, and keep moving forward.</p>
-                        <a href="#courses" className="dashboard-cta">Explore learning</a>
+                        <p>
+                            Explore courses, develop your skills, and keep moving forward.
+                        </p>
+                        <a href="#courses" className="dashboard-cta">
+                            Explore learning
+                        </a>
                     </div>
                     <BookOpen size={90} strokeWidth={1.2} />
                 </section>
@@ -69,11 +86,13 @@ function Dashboard() {
                         <h3>0</h3>
                         <p>Enrolled courses</p>
                     </article>
+
                     <article>
                         <Award size={24} />
                         <h3>0</h3>
                         <p>Certificates earned</p>
                     </article>
+
                     <article>
                         <UserRound size={24} />
                         <h3>Student</h3>
@@ -86,10 +105,13 @@ function Dashboard() {
                         <h2>My Learning</h2>
                         <p>Your enrolled courses will appear here.</p>
                     </div>
+
                     <div className="dashboard-empty">
                         <BookOpen size={34} />
                         <h3>No courses yet</h3>
-                        <p>Once courses are available, you can start learning here.</p>
+                        <p>
+                            Once courses are available, you can start learning here.
+                        </p>
                     </div>
                 </section>
             </section>

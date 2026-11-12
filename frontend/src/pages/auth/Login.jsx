@@ -1,20 +1,24 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, BookOpen, ArrowRight } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 import "./Login.css";
-import { loginUser } from "../services/api";
-import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
         rememberMe: false,
     });
+
     const [message, setMessage] = useState("");
-    const navigate = useNavigate();
 
     const handleChange = (event) => {
         const { name, value, checked, type } = event.target;
@@ -36,21 +40,15 @@ function Login() {
         }
 
         try {
-            const result = await loginUser({
-                email: formData.email,
+            setIsLoading(true);
+            setMessage("");
+
+            const loggedInUser = await login({
+                email: formData.email.trim(),
                 password: formData.password,
             });
 
-            // Save JWT tokens
-
-
-            // Save the user information and JWT tokens
-            localStorage.setItem("user", JSON.stringify(result.user));
-            localStorage.setItem("access", result.access);
-            localStorage.setItem("refresh", result.refresh);
             setMessage("Login successful!");
-
-            const loggedInUser = result.user;
 
             if (
                 loggedInUser?.is_admin ||
@@ -62,16 +60,17 @@ function Login() {
             } else {
                 navigate("/dashboard", { replace: true });
             }
-
-
         } catch (error) {
-            if (error.detail) {
-                setMessage(error.detail);
-            } else {
-                setMessage("Invalid email or password.");
-            }
+            setMessage(
+                error.detail ||
+                error.message ||
+                "Unable to log in. Please try again."
+            );
+        } finally {
+            setIsLoading(false);
         }
     };
+
     return (
         <main className="login-page">
             <section className="login-visual">
@@ -86,18 +85,15 @@ function Login() {
 
                 <div className="login-visual-content">
                     <span className="login-eyebrow">WELCOME BACK</span>
-
                     <h1>
                         Your next big
                         <br />
                         <span>step starts here.</span>
                     </h1>
-
                     <p>
                         Continue learning, build new skills, and move closer to your
                         goals. Your learning journey is waiting for you.
                     </p>
-
                     <div className="login-highlight">
                         <span className="login-highlight-dot" />
                         Learn something new today.
@@ -181,8 +177,13 @@ function Login() {
                             </p>
                         )}
 
-                        <button className="login-submit" type="submit">
-                            Sign in <ArrowRight size={19} />
+                        <button
+                            className="login-submit"
+                            type="submit"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Signing in..." : "Sign in"}
+                            {!isLoading && <ArrowRight size={19} />}
                         </button>
                     </form>
 

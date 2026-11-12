@@ -1,21 +1,14 @@
 
-import Navbar from "../components/Navbar";
-import Hero from "../components/Hero";
-import FeaturedCourses from "../components/FeaturedCourses";
-import PlatformFeatures from "../components/PlatformFeatures";
-import Footer from "../components/Footer";
+import Hero from "../components/home/Hero";
+import FeaturedCourses from "../components/home/FeaturedCourses";
+import PlatformFeatures from "../components/home/PlatformFeatures";
 
 function Home() {
     return (
         <>
-            <Navbar />
-
-            <main>
-                <Hero />
-                <FeaturedCourses />
-                <PlatformFeatures />
-                <Footer />
-            </main>
+            <Hero />
+            <FeaturedCourses />
+            <PlatformFeatures />
         </>
     );
 }
