@@ -1,5 +1,14 @@
 from rest_framework import serializers
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
+
 from courses.models import Course
+
+
+class CourseMentorSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    name = serializers.CharField()
+    email = serializers.CharField()
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -27,10 +36,12 @@ class CourseSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_id(self, obj):
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_id(self, obj) -> str:
         return str(obj.id)
 
-    def get_mentor(self, obj):
+    @extend_schema_field(CourseMentorSerializer(allow_null=True))
+    def get_mentor(self, obj) -> dict[str, str] | None:
         if obj.mentor:
             return {
                 "id": str(obj.mentor.id),
