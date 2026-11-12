@@ -1,4 +1,4 @@
-from django.urls import include, re_path
+from django.urls import include, path, re_path
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -10,7 +10,7 @@ urlpatterns = [
     re_path(r'admin/', include('api.v1.admin.urls')),
     re_path(r'students/', include('api.v1.students.urls')),
     re_path(r'mentors/', include('api.v1.mentors.urls')),
-    # re_path(r'courses/', include('api.v1.courses.urls')),
+    re_path(r"courses/", include("api.v1.courses.urls")),
 
 
     # OpenAPI Schema
