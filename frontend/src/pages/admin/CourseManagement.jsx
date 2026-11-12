@@ -17,7 +17,7 @@ import {
     createCourse,
     updateCourse,
     deleteCourse,
-} from "../services/api";
+} from "../../services/modules/courses.service";
 
 import "./CourseManagement.css";
 
@@ -546,3 +546,4 @@ function CourseManagement() {
 }
 
 export default CourseManagement;
+

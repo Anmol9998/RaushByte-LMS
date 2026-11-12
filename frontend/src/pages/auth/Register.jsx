@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../services/api";
+import { registerUser } from "../../services/auth.service";
 import "./Register.css";
 
 function Register() {
@@ -246,3 +246,4 @@ function Register() {
 }
 
 export default Register;
+

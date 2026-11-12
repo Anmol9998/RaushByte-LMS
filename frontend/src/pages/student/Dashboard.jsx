@@ -9,7 +9,7 @@ import {
     LogOut,
 } from "lucide-react";
 
-import { getCourses } from "../services/api";
+import { getCourses } from "../../services/modules/courses.service";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -187,3 +187,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+

@@ -16,7 +16,7 @@ import {
     createUser,
     updateUser,
     deleteUser,
-} from "../services/api";
+} from "../../services/modules/admin.service";
 
 import "./UserManagement.css";
 
@@ -573,3 +573,4 @@ function UserManagement() {
 }
 
 export default UserManagement;
+

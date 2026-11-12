@@ -3,12 +3,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, BookOpen, ArrowRight } from "lucide-react";
 import "./Login.css";
-import { loginUser } from "../services/api";
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -29,6 +29,7 @@ function Login() {
         setMessage("");
     };
 
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -43,17 +44,10 @@ function Login() {
             setIsLoading(true);
             setMessage("");
 
-            const result = await loginUser({
+            const loggedInUser = await login({
                 email: formData.email.trim(),
                 password: formData.password,
             });
-
-            // Save authentication information
-            localStorage.setItem("user", JSON.stringify(result.user));
-            localStorage.setItem("access", result.access);
-            localStorage.setItem("refresh", result.refresh);
-
-            const loggedInUser = result.user;
 
             setMessage("Login successful!");
 
@@ -76,12 +70,13 @@ function Login() {
             } else if (error.non_field_errors) {
                 setMessage(error.non_field_errors[0]);
             } else {
-                setMessage("Unable to log in. Please try again.");
+                setMessage(error.message || "Unable to log in. Please try again.");
             }
         } finally {
             setIsLoading(false);
         }
     };
+
 
     return (
         <main className="login-page">
@@ -229,3 +224,4 @@ function Login() {
 }
 
 export default Login;
+
