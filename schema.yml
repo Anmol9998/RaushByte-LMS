@@ -1,0 +1,1766 @@
+openapi: 3.0.3
+info:
+  title: RaushByte LMS API
+  version: 1.0.0
+  description: "\n    API documentation for the RaushByte Learning\n    Management
+    System.\n\n    This API provides endpoints for:\n    - User authentication\n    -
+    User management\n    - Course management\n    - Modules and lessons\n    - Student
+    enrollment\n    - Assessments\n    - Progress tracking\n    "
+paths:
+  /api/v1/admin/dashboard/:
+    get:
+      operationId: admin_dashboard_retrieve
+      summary: Get the admin dashboard summary
+      tags:
+      - Administration
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboardSummary'
+          description: ''
+        '403':
+          description: Administrator access required
+  /api/v1/admin/login/:
+    post:
+      operationId: admin_login_create
+      description: Authenticates an administrator and returns JWT tokens and profile
+        details.
+      summary: Log in an administrator
+      tags:
+      - Administration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminLogin'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminLoginResponse'
+          description: ''
+        '400':
+          description: Invalid login details
+        '401':
+          description: Invalid email or password
+  /api/v1/admin/users/:
+    get:
+      operationId: admin_users_list
+      summary: List users
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+        '403':
+          description: Administrator access required
+    post:
+      operationId: admin_users_create
+      summary: Create a user
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: Invalid user details
+        '403':
+          description: Administrator access required
+  /api/v1/admin/users/{id}/:
+    get:
+      operationId: admin_users_retrieve
+      summary: Get a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '403':
+          description: Administrator access required
+        '404':
+          description: User not found
+    put:
+      operationId: admin_users_update
+      summary: Replace a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: Invalid user details
+        '403':
+          description: Administrator access required
+        '404':
+          description: User not found
+    patch:
+      operationId: admin_users_partial_update
+      summary: Update a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '400':
+          description: Invalid user details
+        '403':
+          description: Administrator access required
+        '404':
+          description: User not found
+    delete:
+      operationId: admin_users_destroy
+      summary: Delete a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '403':
+          description: Administrator access required
+        '404':
+          description: User not found
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: Authenticates a user and returns JWT tokens and profile details.
+      summary: Log in a user
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          description: ''
+        '400':
+          description: Invalid login details
+        '401':
+          description: Invalid email or password
+  /api/v1/auth/register/:
+    post:
+      operationId: auth_register_create
+      description: Creates a new LMS user account.
+      summary: Register a new user
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+          description: ''
+        '400':
+          description: Invalid registration details
+  /api/v1/courses/:
+    get:
+      operationId: courses_list
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+          description: ''
+    post:
+      operationId: courses_create
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /api/v1/courses/detail/{id}/:
+    get:
+      operationId: courses_detail_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    put:
+      operationId: courses_detail_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: courses_detail_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: courses_detail_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/lessons/:
+    get:
+      operationId: courses_lessons_list
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lesson'
+          description: ''
+    post:
+      operationId: courses_lessons_create
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+          description: ''
+  /api/v1/courses/lessons/{id}/:
+    get:
+      operationId: courses_lessons_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+          description: ''
+    put:
+      operationId: courses_lessons_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lesson'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+          description: ''
+    patch:
+      operationId: courses_lessons_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLesson'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLesson'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLesson'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+          description: ''
+    delete:
+      operationId: courses_lessons_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/modules/:
+    get:
+      operationId: courses_modules_list
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Module'
+          description: ''
+    post:
+      operationId: courses_modules_create
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Module'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Module'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Module'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module'
+          description: ''
+  /api/v1/courses/modules/{id}/:
+    get:
+      operationId: courses_modules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module'
+          description: ''
+    put:
+      operationId: courses_modules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Module'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Module'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Module'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module'
+          description: ''
+    patch:
+      operationId: courses_modules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedModule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedModule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedModule'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module'
+          description: ''
+    delete:
+      operationId: courses_modules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/courses/resources/:
+    get:
+      operationId: courses_resources_list
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LessonResource'
+          description: ''
+    post:
+      operationId: courses_resources_create
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonResource'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LessonResource'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LessonResource'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonResource'
+          description: ''
+  /api/v1/courses/resources/{id}/:
+    get:
+      operationId: courses_resources_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonResource'
+          description: ''
+    put:
+      operationId: courses_resources_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonResource'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LessonResource'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LessonResource'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonResource'
+          description: ''
+    patch:
+      operationId: courses_resources_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonResource'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonResource'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLessonResource'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonResource'
+          description: ''
+    delete:
+      operationId: courses_resources_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/internship-batches/:
+    get:
+      operationId: internship_batches_list
+      summary: List internship batches
+      tags:
+      - Internship Batches
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternshipBatch'
+          description: ''
+        '401':
+          description: Authentication required
+    post:
+      operationId: internship_batches_create
+      summary: Create an internship batch
+      tags:
+      - Internship Batches
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternshipBatch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InternshipBatch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InternshipBatch'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipBatch'
+          description: ''
+        '400':
+          description: Invalid internship batch data
+        '403':
+          description: Administrator access required
+  /api/v1/internship-batches/detail/{id}/:
+    get:
+      operationId: internship_batches_detail_retrieve
+      summary: Get an internship batch
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this internship batch.
+        required: true
+      tags:
+      - Internship Batches
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipBatch'
+          description: ''
+        '401':
+          description: Authentication required
+        '404':
+          description: Internship batch not found
+    put:
+      operationId: internship_batches_detail_update
+      summary: Replace an internship batch
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this internship batch.
+        required: true
+      tags:
+      - Internship Batches
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternshipBatch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InternshipBatch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InternshipBatch'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipBatch'
+          description: ''
+        '400':
+          description: Invalid internship batch data
+        '403':
+          description: Administrator access required
+        '404':
+          description: Internship batch not found
+    patch:
+      operationId: internship_batches_detail_partial_update
+      summary: Update an internship batch
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this internship batch.
+        required: true
+      tags:
+      - Internship Batches
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInternshipBatch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInternshipBatch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInternshipBatch'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternshipBatch'
+          description: ''
+        '400':
+          description: Invalid internship batch data
+        '403':
+          description: Administrator access required
+        '404':
+          description: Internship batch not found
+    delete:
+      operationId: internship_batches_detail_destroy
+      summary: Delete an internship batch
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this internship batch.
+        required: true
+      tags:
+      - Internship Batches
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+        '403':
+          description: Administrator access required
+        '404':
+          description: Internship batch not found
+components:
+  schemas:
+    AdminDashboardSummary:
+      type: object
+      properties:
+        total_students:
+          type: integer
+        total_mentors:
+          type: integer
+        total_admins:
+          type: integer
+        active_courses:
+          type: integer
+        internship_batches:
+          type: integer
+      required:
+      - active_courses
+      - internship_batches
+      - total_admins
+      - total_mentors
+      - total_students
+    AdminLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    AdminLoginResponse:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+        user:
+          $ref: '#/components/schemas/AdminLoginUser'
+      required:
+      - access
+      - refresh
+      - user
+    AdminLoginUser:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        is_staff:
+          type: boolean
+        is_superuser:
+          type: boolean
+        is_admin:
+          type: boolean
+      required:
+      - email
+      - first_name
+      - id
+      - is_admin
+      - is_staff
+      - is_superuser
+      - last_name
+      - role
+      - username
+    ContentTypeEnum:
+      enum:
+      - video
+      - pdf
+      - ppt
+      - text
+      - link
+      - quiz
+      - assignment
+      type: string
+      description: |-
+        * `video` - Video
+        * `pdf` - PDF
+        * `ppt` - PPT
+        * `text` - Text
+        * `link` - Link
+        * `quiz` - Quiz
+        * `assignment` - Assignment
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        category:
+          type: string
+          maxLength: 100
+        duration:
+          type: string
+          maxLength: 100
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        mentor:
+          allOf:
+          - $ref: '#/components/schemas/CourseMentor'
+          nullable: true
+          readOnly: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category
+      - created_at
+      - description
+      - duration
+      - id
+      - mentor
+      - title
+      - updated_at
+    CourseMentor:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+      required:
+      - email
+      - id
+      - name
+    InternshipBatch:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        batch_name:
+          type: string
+          maxLength: 150
+        course:
+          type: integer
+          nullable: true
+        course_info:
+          allOf:
+          - $ref: '#/components/schemas/InternshipBatchCourse'
+          nullable: true
+          readOnly: true
+        mentor:
+          allOf:
+          - $ref: '#/components/schemas/InternshipBatchMentor'
+          nullable: true
+          readOnly: true
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        max_students:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - batch_name
+      - course_info
+      - created_at
+      - end_date
+      - id
+      - mentor
+      - start_date
+      - updated_at
+    InternshipBatchCourse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+      required:
+      - id
+      - title
+    InternshipBatchMentor:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+      required:
+      - email
+      - id
+      - name
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        module:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          default: 1
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        file:
+          type: string
+          format: uri
+          nullable: true
+        external_link:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        text_content:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+      required:
+      - content_type
+      - id
+      - module
+      - title
+    LessonResource:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        lesson:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        resource_type:
+          $ref: '#/components/schemas/ResourceTypeEnum'
+        file:
+          type: string
+          format: uri
+          nullable: true
+        external_link:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        text_content:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - lesson
+      - resource_type
+      - title
+    LevelEnum:
+      enum:
+      - Beginner
+      - Intermediate
+      - Advanced
+      type: string
+      description: |-
+        * `Beginner` - Beginner
+        * `Intermediate` - Intermediate
+        * `Advanced` - Advanced
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    LoginResponse:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+        user:
+          $ref: '#/components/schemas/LoginUser'
+      required:
+      - access
+      - refresh
+      - user
+    LoginUser:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        is_staff:
+          type: boolean
+        is_superuser:
+          type: boolean
+        is_admin:
+          type: boolean
+      required:
+      - email
+      - first_name
+      - id
+      - is_admin
+      - is_staff
+      - is_superuser
+      - last_name
+      - role
+      - username
+    Module:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          default: 1
+        is_active:
+          type: boolean
+      required:
+      - course
+      - id
+      - title
+    PatchedCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        category:
+          type: string
+          maxLength: 100
+        duration:
+          type: string
+          maxLength: 100
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        mentor:
+          allOf:
+          - $ref: '#/components/schemas/CourseMentor'
+          nullable: true
+          readOnly: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedInternshipBatch:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        batch_name:
+          type: string
+          maxLength: 150
+        course:
+          type: integer
+          nullable: true
+        course_info:
+          allOf:
+          - $ref: '#/components/schemas/InternshipBatchCourse'
+          nullable: true
+          readOnly: true
+        mentor:
+          allOf:
+          - $ref: '#/components/schemas/InternshipBatchMentor'
+          nullable: true
+          readOnly: true
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        max_students:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedLesson:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        module:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          default: 1
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        file:
+          type: string
+          format: uri
+          nullable: true
+        external_link:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        text_content:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+    PatchedLessonResource:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        lesson:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        resource_type:
+          $ref: '#/components/schemas/ResourceTypeEnum'
+        file:
+          type: string
+          format: uri
+          nullable: true
+        external_link:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        text_content:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedModule:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          default: 1
+        is_active:
+          type: boolean
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+    Register:
+      type: object
+      properties:
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        confirmPassword:
+          type: string
+          writeOnly: true
+      required:
+      - confirmPassword
+      - email
+      - password
+      - username
+    RegisterResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        user_id:
+          type: string
+      required:
+      - message
+      - user_id
+    ResourceTypeEnum:
+      enum:
+      - video
+      - pdf
+      - ppt
+      - text
+      - link
+      - zip
+      type: string
+      description: |-
+        * `video` - Video
+        * `pdf` - PDF
+        * `ppt` - PowerPoint
+        * `text` - Text
+        * `link` - External Link
+        * `zip` - Source Code
+    RoleEnum:
+      enum:
+      - student
+      - mentor
+      - admin
+      type: string
+      description: |-
+        * `student` - Student
+        * `mentor` - Mentor
+        * `admin` - Admin
+    StatusEnum:
+      enum:
+      - upcoming
+      - ongoing
+      - completed
+      type: string
+      description: |-
+        * `upcoming` - Upcoming
+        * `ongoing` - Ongoing
+        * `completed` - Completed
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date_joined
+      - email
+      - id
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

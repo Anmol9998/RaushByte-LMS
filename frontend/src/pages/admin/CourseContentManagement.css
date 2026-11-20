@@ -1,0 +1,321 @@
+/* Main Container */
+.course-content-management {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    color: #f8fafc;
+    box-sizing: border-box;
+}
+
+/* Back Button */
+.course-content-management>button:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid #35516f;
+    border-radius: 8px;
+    background: #122640;
+    color: #e2eaf5;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.course-content-management>button:first-child:hover {
+    border-color: #ff7026;
+    background: #1a3553;
+}
+
+/* Course Heading */
+.course-content-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 28px 0 26px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #263d59;
+}
+
+.course-content-heading p {
+    margin: 0 0 12px;
+    color: #ff7026;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.course-content-heading h1 {
+    margin: 0 0 12px;
+    color: #f8fafc;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.course-content-heading span {
+    color: #a9bdd8;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Add Module Button */
+.course-content-heading>button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 9px;
+    background: #ff7026;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.course-content-heading>button:hover {
+    background: #ea5d17;
+    transform: translateY(-2px);
+}
+
+/* Module List */
+.course-module-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Module Card */
+.course-module-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 98px;
+    padding: 20px 24px;
+    border: 1px solid #35516f;
+    border-radius: 13px;
+    background: #122640;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+.course-module-card:hover {
+    border-color: #ff7026;
+    transform: translateY(-2px);
+}
+
+.course-module-card>div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.course-module-card h3 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.course-module-card p {
+    margin: 0;
+    color: #a9bdd8;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Shared Module Button Styling */
+.course-module-card button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 9px 15px;
+    border: 1px solid #405d7d;
+    border-radius: 8px;
+    background: #203b5b;
+    color: #f8fafc;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.course-module-card button:hover {
+    transform: translateY(-1px);
+}
+
+/* Manage Lessons */
+.course-module-open {
+    border-color: #ff7026 !important;
+    background: #ff7026 !important;
+    color: white !important;
+}
+
+.course-module-open:hover {
+    background: #ea5d17 !important;
+    border-color: #ea5d17 !important;
+}
+
+/* Edit Button */
+.course-module-edit:hover {
+    background: #29496e;
+    border-color: #6b8bad;
+}
+
+/* Delete Button */
+.course-module-delete {
+    width: 42px;
+    min-width: 42px;
+    padding: 9px !important;
+    border-color: #713747 !important;
+    background: rgba(127, 29, 29, 0.2) !important;
+    color: #ff7070 !important;
+}
+
+.course-module-delete:hover {
+    background: #7f1d2d !important;
+    color: white !important;
+}
+
+/* Add / Edit Module Form */
+.course-module-form {
+    width: 100%;
+    margin: 0 0 24px;
+    padding: 24px;
+    border: 1px solid #35516f;
+    border-radius: 13px;
+    background: #122640;
+    box-sizing: border-box;
+}
+
+.course-module-form h2 {
+    margin: 0 0 22px;
+    color: #f8fafc;
+    font-size: 21px;
+}
+
+.course-module-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.course-module-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #dce7f5;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.course-module-form input,
+.course-module-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #35516f;
+    border-radius: 8px;
+    outline: none;
+    background: #0d1d33;
+    color: white;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.course-module-form textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.course-module-form input:focus,
+.course-module-form textarea:focus {
+    border-color: #ff7026;
+}
+
+/* Form Buttons */
+.course-module-form form>button {
+    width: fit-content;
+    min-width: 120px;
+    padding: 11px 18px;
+    border: 1px solid #405d7d;
+    border-radius: 8px;
+    background: #203b5b;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+.course-module-form form>button[type="submit"] {
+    border-color: #ff7026;
+    background: #ff7026;
+}
+
+.course-module-form form>button[type="submit"]:hover {
+    background: #ea5d17;
+}
+
+/* Empty State */
+.course-content-empty {
+    padding: 55px 20px;
+    border: 1px dashed #35516f;
+    border-radius: 12px;
+    text-align: center;
+    color: #a9bdd8;
+}
+
+.course-content-empty h2 {
+    color: #f8fafc;
+    font-size: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .course-content-management {
+        padding: 24px 16px;
+    }
+
+    .course-content-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .course-content-heading h1 {
+        font-size: 25px;
+    }
+
+    .course-module-card {
+        flex-wrap: wrap;
+        padding: 18px;
+    }
+
+    .course-module-card>div:first-child {
+        flex-basis: 100%;
+    }
+
+    .course-module-card button {
+        flex: 1;
+    }
+
+    .course-module-card .course-module-delete {
+        flex: 0 0 42px;
+    }
+}
+
+@media (max-width: 450px) {
+    .course-module-card {
+        gap: 10px;
+    }
+
+    .course-module-card button {
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+}

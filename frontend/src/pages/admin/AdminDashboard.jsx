@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Plus, ArrowUpRight, CalendarDays, Bell, Users, GraduationCap, UserCheck, BookOpen, ClipboardList } from "lucide-react";
 
 import AdminLayout from "../../layouts/AdminLayout";
+import CourseContentManagement from "./CourseContentManagement";
+import ModuleLessons from "./ModuleLessons";
 import UserManagement from "./UserManagement";
 import CourseManagement from "./CourseManagement";
 import { getDashboardSummary } from "../../services/modules/admin.service";
@@ -11,7 +13,8 @@ import "./AdminDashboard.css";
 
 function AdminDashboard() {
     const [activeSection, setActiveSection] = useState("overview");
-
+    const [selectedCourseId, setSelectedCourseId] = useState(null);
+    const [selectedModuleId, setSelectedModuleId] = useState(null);
     const [summary, setSummary] = useState({
         total_students: 0,
         total_mentors: 0,
@@ -243,8 +246,32 @@ function AdminDashboard() {
             )}
 
             {activeSection === "users" && <UserManagement />}
+            {activeSection === "courses" && !selectedCourseId && (
+                <CourseManagement
+                    onManageContent={(courseId) => {
+                        setSelectedCourseId(courseId);
+                        setSelectedModuleId(null);
+                    }}
+                />
+            )}
+            {activeSection === "courses" && selectedCourseId && (
+                selectedModuleId ? (
+                    <ModuleLessons
+                        moduleId={selectedModuleId}
+                        onBack={() => setSelectedModuleId(null)}
+                    />
+                ) : (
+                    <CourseContentManagement
+                        courseId={selectedCourseId}
+                        onBack={() => setSelectedCourseId(null)}
+                        onManageLessons={(moduleId) =>
+                            setSelectedModuleId(moduleId)
+                        }
+                    />
+                )
+            )}
 
-            {activeSection === "courses" && <CourseManagement />}
+
 
             {["batches", "assignments", "certificates"].includes(activeSection) && (
                 <div className="admin-page-heading">

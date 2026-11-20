@@ -30,7 +30,7 @@ const emptyForm = {
     is_active: true,
 };
 
-function CourseManagement() {
+function CourseManagement({ onManageContent }) {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -372,6 +372,13 @@ function CourseManagement() {
                                         </td>
                                         <td>
                                             <div className="cm-actions">
+                                                <button
+                                                    type="button"
+                                                    title="Manage course content"
+                                                    onClick={() => onManageContent(course.id)}
+                                                >
+                                                    <BookOpen size={16} />
+                                                </button>
                                                 <button
                                                     type="button"
                                                     title="Edit course"
