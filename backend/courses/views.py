@@ -1,7 +1,8 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Course, Module, Lesson, LessonResource
+
 from .serializers import (
     CourseSerializer,
     ModuleSerializer,
@@ -71,6 +72,9 @@ class LessonListCreateView(generics.ListCreateAPIView):
     queryset = Lesson.objects.all().order_by("order")
     serializer_class = LessonSerializer
 
+    parser_classes = (MultiPartParser, FormParser)
+
+
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]
@@ -81,6 +85,9 @@ class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
+    parser_classes = (MultiPartParser, FormParser)
+
+
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]
@@ -89,7 +96,9 @@ class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
 class LessonResourceListCreateView(generics.ListCreateAPIView):
     queryset = LessonResource.objects.all().order_by("order")
     serializer_class = LessonResourceSerializer
+    parser_classes = (MultiPartParser, FormParser)
 
+    
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]
@@ -99,6 +108,7 @@ class LessonResourceListCreateView(generics.ListCreateAPIView):
 class LessonResourceDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LessonResource.objects.all()
     serializer_class = LessonResourceSerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_permissions(self):
         if self.request.method == "GET":
