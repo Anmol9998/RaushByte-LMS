@@ -9,12 +9,12 @@ from .views import (
     LessonResourceListCreateView,
     LessonResourceDetailView,
 )
-from .test_upload import TestUploadView
+#from .test_upload import TestUploadView
 urlpatterns = [
     # ==========================
     # Course APIs
     # ==========================
-    path("test-upload/", TestUploadView.as_view()),
+    #path("test-upload/", TestUploadView.as_view()),
 
     path("", CourseListCreateView.as_view(), name="course-list"),
 

@@ -7,9 +7,18 @@ from .permissions import IsAdminRole
 
 
 class AssignmentListCreateView(generics.ListCreateAPIView):
-    queryset = Assignment.objects.all().order_by("-created_at")
     serializer_class = AssignmentSerializer
 
+    def get_queryset(self):
+        queryset = Assignment.objects.all().order_by("-created_at")
+
+        module_id = self.request.query_params.get("module_id")
+
+        if module_id:
+            queryset = queryset.filter(module=module_id)
+        return queryset
+
+        
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]

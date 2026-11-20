@@ -1,19 +1,21 @@
 from rest_framework import serializers
-from courses.models import Course
 from .models import Assignment
+from courses.models import Module
+
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     mentor = serializers.SerializerMethodField()
 
-    course = serializers.PrimaryKeyRelatedField(
-        queryset=Course.objects.all(),
-        required=False,
-        allow_null=True
+    
+
+    module = serializers.PrimaryKeyRelatedField(
+        queryset=Module.objects.all(),
+        required=True
     )
 
-    course_info = serializers.SerializerMethodField(read_only=True)
+    module_info = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Assignment
@@ -21,8 +23,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
-            "course",
-            "course_info",
+            "module",
+            "module_info",
             "mentor",
             "due_date",
             "total_marks",
@@ -51,16 +53,19 @@ class AssignmentSerializer(serializers.ModelSerializer):
             }
         return None
 
-    def get_course_info(self, obj):
-        if obj.course:
+    
+
+
+    def get_module_info(self, obj):
+        if obj.module:
             return {
-                "id": str(obj.course.id),
-                "title": obj.course.title,
+                "id": str(obj.module.id),
+                "title": obj.module.title,
             }
         return None
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        if data.get("course") is not None:
-            data["course"] = str(data["course"])
+        if data.get("module") is not None:
+            data["module"] = str(data["module"])
         return data

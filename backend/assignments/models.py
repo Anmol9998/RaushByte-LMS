@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
-from courses.models import Course
+from courses.models import Module
+
 
 
 class Assignment(models.Model):
@@ -13,11 +14,11 @@ class Assignment(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
 
-    course = models.ForeignKey(
-        Course,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+    
+
+    module = models.ForeignKey(
+        Module,
+        on_delete=models.CASCADE,
         related_name="assignments",
     )
 
@@ -38,4 +39,4 @@ class Assignment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.module.title})"
