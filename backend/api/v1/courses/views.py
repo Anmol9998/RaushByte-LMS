@@ -42,8 +42,16 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ModuleListCreateView(generics.ListCreateAPIView):
-    queryset = Module.objects.all()
     serializer_class = ModuleSerializer
+
+    def get_queryset(self):
+        queryset = Module.objects.all().order_by("order")
+
+        course_id = self.request.query_params.get("course_id")
+        if course_id:
+            queryset = queryset.filter(course=course_id)
+
+        return queryset
 
     def get_permissions(self):
         if self.request.method == "GET":
@@ -67,9 +75,16 @@ class ModuleDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class LessonListCreateView(generics.ListCreateAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
+    def get_queryset(self):
+        queryset = Lesson.objects.all().order_by("order")
+
+        module_id = self.request.query_params.get("module_id")
+        if module_id:
+            queryset = queryset.filter(module=module_id)
+        return queryset
+    
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]
@@ -92,9 +107,17 @@ class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class LessonResourceListCreateView(generics.ListCreateAPIView):
-    queryset = LessonResource.objects.all()
     serializer_class = LessonResourceSerializer
 
+    def get_queryset(self):
+        queryset = LessonResource.objects.all().order_by("order")
+
+        lesson_id = self.request.query_params.get("lesson_id")
+        if lesson_id:
+            queryset = queryset.filter(lesson=lesson_id)
+
+        return queryset
+    
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]
