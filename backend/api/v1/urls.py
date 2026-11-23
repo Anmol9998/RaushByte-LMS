@@ -13,7 +13,11 @@ urlpatterns = [
     re_path(r"courses/", include("api.v1.courses.urls")),
     re_path(r"internship-batches/", include("api.v1.internship_batches.urls")),
     re_path(r"assignments/", include("api.v1.assignments.urls")),
-
+    re_path(r"submissions/", include("api.v1.submissions.urls")),
+    re_path(r"quizzes/", include("api.v1.quizzes.urls")),
+    re_path(r"questions/", include("api.v1.questions.urls")),
+    re_path(r"options/", include("api.v1.options.urls")),
+    
     # OpenAPI Schema
     re_path(
         r"^schema/?$",
