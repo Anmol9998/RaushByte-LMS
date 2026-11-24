@@ -1,4 +1,8 @@
-
+from rest_framework.parsers import (
+    MultiPartParser,
+    FormParser,
+    JSONParser,
+)
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -96,14 +100,36 @@ class LessonListCreateView(generics.ListCreateAPIView):
         serializer.save(module=module)
 
 
+
 class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_permissions(self):
         if self.request.method == "GET":
             return [IsAuthenticated()]
         return [IsAdminRole()]
+
+    def perform_destroy(self, instance):
+        # Store the file information before deleting the lesson
+        file_name = instance.file.name if instance.file else None
+        file_storage = instance.file.storage if instance.file else None
+
+        # Delete the lesson from the database
+        super().perform_destroy(instance)
+
+        # Delete the uploaded file from Cloudflare R2
+        if file_name and file_storage:
+            try:
+                file_storage.delete(file_name)
+            except Exception:
+                import logging
+                logging.getLogger(__name__).exception(
+                    "Failed to delete lesson file from storage: %s",
+                    file_name
+                )
+
 
 
 class LessonResourceListCreateView(generics.ListCreateAPIView):

@@ -96,6 +96,24 @@ export async function getModules() {
     return data;
 }
 
+
+export async function getModuleById(moduleId) {
+    const response = await fetch(
+        `${API_BASE_URL}/courses/modules/${moduleId}/`,
+        {
+            method: "GET",
+            headers: getAuthHeaders(),
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) throw data;
+
+    return data;
+}
+
+
 // Create a module
 export async function createModule(moduleData) {
     const response = await fetch(`${API_BASE_URL}/courses/modules/`, {
@@ -211,25 +229,44 @@ export async function deleteLesson(lessonId) {
 
 
 // Upload lesson content (video, PDF, PPT)
+
+
+
 export async function uploadLessonFile(lessonId, file) {
     const formData = new FormData();
     formData.append("file", file);
+
+    // Keep authentication headers but remove JSON content type.
+    const headers = { ...getAuthHeaders() };
+
+    delete headers["Content-Type"];
+    delete headers["content-type"];
 
     const response = await fetch(
         `${API_BASE_URL}/courses/lessons/${lessonId}/`,
         {
             method: "PATCH",
-            headers: {
-                ...getAuthHeaders(),
-                "Content-Type": undefined,
-            },
+            headers,
             body: formData,
         }
     );
 
-    const data = await response.json();
+    const responseText = await response.text();
 
-    if (!response.ok) throw data;
+    let data;
+
+    try {
+        data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+        throw new Error(
+            `Invalid server response. HTTP ${response.status}`
+        );
+    }
+
+    if (!response.ok) {
+        console.error("Upload API error:", data);
+        throw new Error(JSON.stringify(data));
+    }
 
     return data;
 }

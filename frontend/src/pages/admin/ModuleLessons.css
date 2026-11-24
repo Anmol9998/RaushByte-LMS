@@ -346,3 +346,27 @@
         flex: 1;
     }
 }
+
+.lesson-text-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.lesson-text-section textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 14px;
+    border: 1px solid #334b68;
+    border-radius: 9px;
+    background: #0d1b30;
+    color: #ffffff;
+    font: inherit;
+    resize: vertical;
+}
+
+.lesson-text-section textarea:focus {
+    outline: none;
+    border-color: #f97316;
+}

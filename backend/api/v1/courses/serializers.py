@@ -66,23 +66,43 @@ class ModuleSerializer(serializers.ModelSerializer):
         return data
 
 
+
+import os
+
 class LessonSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     module = serializers.PrimaryKeyRelatedField(
         queryset=Module.objects.all()
     )
+    file_name = serializers.SerializerMethodField()
+    file_size = serializers.SerializerMethodField()
 
     class Meta:
         model = Lesson
         fields = [
             "id", "module", "title", "description", "order",
-            "content_type", "file", "external_link",
-            "text_content", "is_active",
+            "content_type", "file", "file_name", "file_size",
+            "external_link", "text_content", "is_active",
         ]
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_id(self, obj):
         return str(obj.id)
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_file_name(self, obj):
+        if obj.file:
+            return os.path.basename(obj.file.name)
+        return None
+
+    @extend_schema_field(OpenApiTypes.INT)
+    def get_file_size(self, obj):
+        if obj.file:
+            try:
+                return obj.file.size
+            except (OSError, ValueError):
+                return None
+        return None
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -91,6 +111,7 @@ class LessonSerializer(serializers.ModelSerializer):
             "title": instance.module.title,
         }
         return data
+
 
 
 class LessonResourceSerializer(serializers.ModelSerializer):

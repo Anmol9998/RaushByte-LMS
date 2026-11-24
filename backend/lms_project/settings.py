@@ -295,3 +295,7 @@ LOGGING = {
         },
     },
 }
+
+# File Upload Settings
+DATA_UPLOAD_MAX_MEMORY_SIZE = 550 * 1024 * 1024  # 550 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024   # 50 MB

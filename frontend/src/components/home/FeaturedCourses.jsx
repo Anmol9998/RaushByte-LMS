@@ -1,4 +1,4 @@
-
+import CourseCard from "../common/CourseCard";
 import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import "./FeaturedCourses.css";
@@ -143,6 +143,7 @@ function FeaturedCourses() {
                         onClickCapture={handleClickCapture}
                         aria-label="Available courses"
                     >
+
                         {courses.map((course, index) => (
                             <motion.article
                                 className="course-card"
@@ -154,43 +155,18 @@ function FeaturedCourses() {
                                     duration: 0.45,
                                     delay: index * 0.12,
                                 }}
-                                whileHover={
-                                    isDraggingNow ? {} : { y: -6 }
-                                }
+                                whileHover={isDraggingNow ? {} : { y: -6 }}
                             >
-                                <div
-                                    className={`course-visual ${course.color}`}
-                                >
-                                    <span className="course-icon">
-                                        {course.icon}
-                                    </span>
-
-                                    <span className="course-category">
-                                        {course.category}
-                                    </span>
-                                </div>
-
-                                <div className="course-content">
-                                    <div className="course-meta">
-                                        <span>{course.level}</span>
-                                        <span>{course.duration}</span>
-                                    </div>
-
-                                    <h3>{course.title}</h3>
-
-                                    <p>{course.description}</p>
-
-                                    <a
-                                        href="#login"
-                                        className="course-link"
-                                        aria-label={`Explore ${course.title}`}
-                                    >
-                                        Explore course{" "}
-                                        <span aria-hidden="true">&rarr;</span>
-                                    </a>
-                                </div>
+                                <CourseCard
+                                    course={course}
+                                    actionLabel="Explore course"
+                                    onAction={() => {
+                                        window.location.href = "#login";
+                                    }}
+                                />
                             </motion.article>
                         ))}
+
                     </div>
                 </div>
 

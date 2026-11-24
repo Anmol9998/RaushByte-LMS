@@ -17,3 +17,17 @@ class IsAdminRole(BasePermission):
                 user.role == "admin"
             )
         )
+
+
+class IsStudentRole(BasePermission):
+    """
+    Allow access only to students.
+    """
+
+    def has_permission(self, request, view):
+        user = request.user
+
+        return (
+            user.is_authenticated and
+            user.role == "student"
+        )

@@ -586,3 +586,27 @@
         transition: none;
     }
 }
+
+/* My Courses Grid */
+.my-courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,
+            minmax(min(100%, 320px), 1fr));
+    gap: 24px;
+    max-width: 1150px;
+    margin-top: 28px;
+}
+
+.my-courses-grid .course-card {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+    .my-courses-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+}

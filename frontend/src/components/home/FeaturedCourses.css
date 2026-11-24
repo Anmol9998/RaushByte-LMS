@@ -249,13 +249,25 @@
     display: inline-flex;
     align-items: center;
     align-self: flex-start;
-    gap: 9px;
+    gap: 8px;
     margin-top: 20px;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+
     color: #ff9b55;
-    font-size: 12px;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 700;
+
+    cursor: pointer;
     text-decoration: none;
     transition: color 0.2s ease;
+}
+
+.course-link:hover {
+    color: #ffffff;
 }
 
 /* Tablet: two cards visible with horizontal scrolling */

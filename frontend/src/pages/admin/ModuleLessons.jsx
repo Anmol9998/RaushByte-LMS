@@ -17,6 +17,7 @@ import {
     createLesson,
     updateLesson,
     deleteLesson,
+    uploadLessonFile,
 } from "../../services/modules/courses.service";
 
 function ModuleLessons({ moduleId, onBack }) {
@@ -33,6 +34,8 @@ function ModuleLessons({ moduleId, onBack }) {
         title: "",
         description: "",
         content_type: "video",
+        text_content: "",
+        external_link: "",
     });
 
     const [selectedVideo, setSelectedVideo] = useState(null);
@@ -113,6 +116,8 @@ function ModuleLessons({ moduleId, onBack }) {
             title: "",
             description: "",
             content_type: "video",
+            text_content: "",
+            external_link: "",
         });
 
         setEditingLesson(null);
@@ -130,8 +135,29 @@ function ModuleLessons({ moduleId, onBack }) {
     }
 
     // Handle lesson submission
+
+
     async function handleLessonSubmit(event) {
         event.preventDefault();
+
+        // Validate required file selection
+        if (
+            lessonForm.content_type === "video" &&
+            !editingLesson &&
+            !selectedVideo
+        ) {
+            alert("Please select a video for this lesson.");
+            return;
+        }
+
+        if (
+            ["pdf", "ppt"].includes(lessonForm.content_type) &&
+            !editingLesson &&
+            !selectedDocument
+        ) {
+            alert(`Please select a ${lessonForm.content_type.toUpperCase()} file.`);
+            return;
+        }
 
         try {
             setSavingLesson(true);
@@ -141,46 +167,68 @@ function ModuleLessons({ moduleId, onBack }) {
                 title: lessonForm.title.trim(),
                 description: lessonForm.description.trim(),
                 content_type: lessonForm.content_type,
-                order:
-                    lessons.length > 0
-                        ? Math.max(
-                            ...lessons.map((lesson) => lesson.order || 0)
-                        ) + 1
+                text_content: lessonForm.text_content,
+                external_link: lessonForm.external_link,
+                order: editingLesson
+                    ? editingLesson.order
+                    : lessons.length > 0
+                        ? Math.max(...lessons.map(lesson => lesson.order || 0)) + 1
                         : 1,
                 is_active: true,
             };
 
-            if (editingLesson) {
-                const updatedLesson = await updateLesson(
-                    editingLesson.id,
-                    {
-                        title: lessonData.title,
-                        description: lessonData.description,
-                        content_type: lessonData.content_type,
-                    }
-                );
+            let savedLesson;
 
-                setLessons((previous) =>
-                    previous.map((lesson) =>
-                        lesson.id === editingLesson.id
-                            ? updatedLesson
+            // Create or update lesson
+            if (editingLesson) {
+                savedLesson = await updateLesson(
+                    editingLesson.id,
+                    lessonData
+                );
+            } else {
+                savedLesson = await createLesson(lessonData);
+            }
+
+            // Upload video, PDF or PPT to Cloudflare R2
+            const fileToUpload =
+                lessonForm.content_type === "video"
+                    ? selectedVideo
+                    : ["pdf", "ppt"].includes(lessonForm.content_type)
+                        ? selectedDocument
+                        : null;
+
+            if (fileToUpload) {
+                savedLesson = await uploadLessonFile(
+                    savedLesson.id,
+                    fileToUpload
+                );
+            }
+
+            // Update lesson list
+            if (editingLesson) {
+                setLessons(previous =>
+                    previous.map(lesson =>
+                        String(lesson.id) === String(editingLesson.id)
+                            ? savedLesson
                             : lesson
                     )
                 );
             } else {
-                const newLesson = await createLesson(lessonData);
-
-                setLessons((previous) => [...previous, newLesson]);
+                setLessons(previous => [...previous, savedLesson]);
             }
 
             resetLessonForm();
+            alert("Lesson saved successfully!");
+
         } catch (err) {
-            console.error("Lesson save error:", err);
-            alert("Unable to save lesson. Please try again.");
+            console.error("Lesson save/upload error:", err);
+            alert("Unable to save the lesson or upload its file. Please check the console.");
         } finally {
             setSavingLesson(false);
         }
     }
+
+
 
     // Edit lesson
     function handleEditLesson(lesson) {
@@ -192,6 +240,8 @@ function ModuleLessons({ moduleId, onBack }) {
             title: lesson.title || "",
             description: lesson.description || "",
             content_type: lesson.content_type || "video",
+            text_content: lesson.text_content || "",
+            external_link: lesson.external_link || "",
         });
 
         setShowLessonForm(true);
@@ -483,6 +533,27 @@ function ModuleLessons({ moduleId, onBack }) {
                                     )}
                                 </div>
                             )}
+
+                        {/* Text Content */}
+                        {lessonForm.content_type === "text" && (
+                            <label className="lesson-text-section">
+                                Lesson Content
+
+                                <textarea
+                                    value={lessonForm.text_content}
+                                    onChange={(event) =>
+                                        setLessonForm((previous) => ({
+                                            ...previous,
+                                            text_content: event.target.value,
+                                        }))
+                                    }
+                                    placeholder="Write your lesson content here..."
+                                    rows={8}
+                                    required
+                                />
+                            </label>
+                        )}
+
 
                         {/* Save Button */}
                         <button type="submit" disabled={savingLesson}>
