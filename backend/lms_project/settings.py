@@ -71,6 +71,8 @@ INSTALLED_APPS = [
     "progress",
     "certificates",
     "internship_batches",
+    "submissions",
+    "enrollments"
 ]
 
 MIDDLEWARE = [
