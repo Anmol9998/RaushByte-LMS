@@ -8,9 +8,8 @@ class Lesson(models.Model):
         ("pdf", "PDF"),
         ("ppt", "PPT"),
         ("text", "Text"),
-        ("link", "Link"),
-        ("quiz", "Quiz"),
-        ("assignment", "Assignment"),
+        ("link", "Link")
+        
     ]
 
     module = models.ForeignKey(

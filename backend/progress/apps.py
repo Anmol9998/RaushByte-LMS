@@ -4,3 +4,6 @@ from django.apps import AppConfig
 class ProgressConfig(AppConfig):
     default_auto_field = "django_mongodb_backend.fields.ObjectIdAutoField"
     name = "progress"
+
+    def ready(self):
+        import progress.signals

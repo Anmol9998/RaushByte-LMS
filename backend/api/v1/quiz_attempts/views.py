@@ -1,4 +1,6 @@
+from django.db import transaction
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework import generics, status
@@ -6,22 +8,33 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from enrollments.models import Enrollment
+from progress.services import (
+    get_or_create_progress,
+    increment_progress,
+)
 from quizzes.models import (
     QuizAttempt,
     StudentAnswer,
     QuizResult,
 )
-from .serializers import QuizAttemptSerializer
+
 from .permissions import IsAdminRole
+from .serializers import QuizAttemptSerializer
 
 
 class QuizAttemptListCreateView(generics.ListCreateAPIView):
     serializer_class = QuizAttemptSerializer
 
     def get_queryset(self):
-        queryset = QuizAttempt.objects.select_related(
-            "student", "quiz"
-        ).all().order_by("-started_at")
+        queryset = (
+            QuizAttempt.objects.select_related(
+                "student",
+                "quiz",
+            )
+            .all()
+            .order_by("-started_at")
+        )
 
         student_id = self.request.query_params.get("student_id")
         quiz_id = self.request.query_params.get("quiz_id")
@@ -42,8 +55,10 @@ class QuizAttemptListCreateView(generics.ListCreateAPIView):
 
 class QuizAttemptDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = QuizAttempt.objects.select_related(
-        "student", "quiz"
+        "student",
+        "quiz",
     ).all()
+
     serializer_class = QuizAttemptSerializer
 
     def get_permissions(self):
@@ -51,23 +66,49 @@ class QuizAttemptDetailView(generics.RetrieveUpdateDestroyAPIView):
             return [IsAuthenticated()]
         return [IsAdminRole()]
 
+
 class SubmitQuizView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request, pk):
-        try:
-            attempt = QuizAttempt.objects.get(pk=pk)
-        except QuizAttempt.DoesNotExist:
+        attempt = get_object_or_404(
+            QuizAttempt.objects.select_related(
+                "student",
+                "quiz",
+                "quiz__module",
+                "quiz__module__course",
+            ),
+            pk=pk,
+        )
+
+        if attempt.status == "submitted":
             return Response(
-                {"detail": "Quiz attempt not found."},
-                status=status.HTTP_404_NOT_FOUND,
+                {
+                    "detail": "This quiz has already been submitted."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        answers = StudentAnswer.objects.filter(
-            quiz_attempt=attempt
-        ).select_related("question")
+        answers = (
+            StudentAnswer.objects.filter(
+                quiz_attempt=attempt
+            )
+            .select_related(
+                "question",
+                "selected_option",
+            )
+        )
 
         total_questions = answers.count()
+
+        if total_questions == 0:
+            return Response(
+                {
+                    "detail": "No answers found for this quiz attempt."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         correct_answers = answers.filter(
             is_correct=True
@@ -78,7 +119,8 @@ class SubmitQuizView(APIView):
         obtained_marks = (
             answers.aggregate(
                 total=Sum("marks_obtained")
-            )["total"] or 0
+            )["total"]
+            or 0
         )
 
         total_marks = sum(
@@ -116,12 +158,36 @@ class SubmitQuizView(APIView):
             },
         )
 
+        enrollment = get_object_or_404(
+            Enrollment,
+            student=attempt.student,
+            course=attempt.quiz.module.course,
+        )
+
+        progress = get_or_create_progress(enrollment)
+
+        if created:
+            increment_progress(
+                progress,
+                "completed_quizzes",
+            )
+
         return Response(
             {
-                "message": "Quiz submitted successfully",
+                "message": "Quiz submitted successfully.",
                 "quiz_attempt": str(attempt.id),
                 "result_id": str(result.id),
-                "score": obtained_marks,
+                "student": (
+                    attempt.student.get_full_name()
+                    or attempt.student.username
+                ),
+                "course": attempt.quiz.module.course.title,
+                "quiz": attempt.quiz.title,
+                "total_questions": total_questions,
+                "correct_answers": correct_answers,
+                "wrong_answers": wrong_answers,
+                "total_marks": total_marks,
+                "obtained_marks": obtained_marks,
                 "percentage": percentage,
                 "status": status_result,
             },

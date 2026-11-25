@@ -21,6 +21,11 @@ urlpatterns = [
     re_path(r"student-answers/", include("api.v1.student_answers.urls")),
     re_path(r"quiz-results/", include("api.v1.quiz_results.urls")),
     re_path(r"enrollments/", include("api.v1.enrollments.urls")),
+    re_path(r"progress/", include("api.v1.progress.urls")),
+    re_path(r"lesson-completions/", include("api.v1.lesson_completions.urls")),
+    re_path(r"assignment-completions/", include("api.v1.assignment_completions.urls")),
+    re_path(r"quiz-completions/", include("api.v1.quiz_completions.urls"),
+),
     
     # OpenAPI Schema
     re_path(
