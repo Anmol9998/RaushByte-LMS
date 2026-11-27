@@ -28,6 +28,8 @@ class Migration(migrations.Migration):
                 ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='enrollments', to=settings.AUTH_USER_MODEL)),
             ],
             options={
+                'db_table': 'courses_enrollment',
+                'managed': False,
                 'ordering': ['-enrolled_at'],
                 'unique_together': {('student', 'course')},
             },

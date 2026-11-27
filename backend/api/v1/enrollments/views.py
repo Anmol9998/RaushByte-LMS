@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from courses.models import Enrollment
+from enrollments.models import Enrollment
 
 from .serializers import EnrollmentSerializer
 from .permissions import IsAdminRole

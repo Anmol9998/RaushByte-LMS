@@ -2,7 +2,7 @@
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 
-from courses.models import Enrollment
+from enrollments.models import Enrollment
 from .serializers import EnrollmentSerializer
 from api.v1.auth.permissions import IsStudentRole
 

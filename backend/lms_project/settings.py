@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     # PROJECT APPS
     "users",
     "courses",
+    "enrollments",
     "assignments",
     "quizzes",
     "progress",

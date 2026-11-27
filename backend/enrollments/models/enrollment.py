@@ -40,6 +40,8 @@ class Enrollment(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "courses_enrollment"
+        managed = False
         ordering = ["-enrolled_at"]
         unique_together = ("student", "course")
 

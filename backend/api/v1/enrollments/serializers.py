@@ -2,7 +2,7 @@ from rest_framework import serializers
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 
-from courses.models import Enrollment
+from enrollments.models import Enrollment
 from users.models import CustomUser
 from courses.models import Course
 
